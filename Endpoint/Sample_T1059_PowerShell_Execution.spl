@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - SUSPICIOUS POWERSHELL
 ==============================================================================
 Rule: Suspicious PowerShell Execution (Encoded/Download)
 ID: SPL-END-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1059.001 (PowerShell)
 Severity: HIGH

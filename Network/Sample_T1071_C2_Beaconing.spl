@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - C2 BEACONING
 ==============================================================================
 Rule: High Frequency Connection to Rare Destination (Potential C2)
 ID: SPL-NET-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1071.001 (Web Protocols)
 Severity: HIGH

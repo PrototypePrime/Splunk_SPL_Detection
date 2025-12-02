@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - AWS CONSOLE LOGIN WITHOUT MFA
 ==============================================================================
 Rule: AWS Console Login Without MFA
 ID: SPL-CLOUD-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1078.004 (Cloud Accounts)
 Severity: MEDIUM

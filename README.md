@@ -8,7 +8,7 @@
 
 **Production-Ready SPL Correlation Searches for Splunk Enterprise Security**
 
-*Curated by PrototypePrime | Senior Security Engineer*
+*Curated by Mathan | Senior Security Engineer*
 
 [🚀 Quick Start](#-quick-start) • [📁 Categories](#-detection-categories) • [📖 Documentation](#-detection-engineering-workflow) • [🤝 Contributing](#-contributing)
 

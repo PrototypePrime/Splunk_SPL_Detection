@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - PRIVILEGED GROUP MODIFICATION
 ==============================================================================
 Rule: User Added to Privileged Group (Domain Admins)
 ID: SPL-ID-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1098 (Account Manipulation)
 Severity: CRITICAL

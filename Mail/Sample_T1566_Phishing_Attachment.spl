@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - PHISHING ATTACHMENT
 ==============================================================================
 Rule: Suspicious Email Attachment Extension
 ID: SPL-MAIL-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1566.001 (Spearphishing Attachment)
 Severity: HIGH

@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - BRUTE FORCE LOGIN ATTACK
 ==============================================================================
 Rule: Multiple Failed Login Attempts Followed by Success
 ID: SPL-AUTH-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1110.001 (Brute Force: Password Guessing)
 Severity: HIGH

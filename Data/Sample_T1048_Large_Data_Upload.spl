@@ -4,7 +4,7 @@ SPLUNK SPL DETECTION - LARGE DATA UPLOAD
 ==============================================================================
 Rule: Large Data Upload to External IP
 ID: SPL-DATA-001
-Author: PrototypePrime
+Author: Mathan
 Date: 2025-12-02
 MITRE: T1048 (Exfiltration Over Alternative Protocol)
 Severity: MEDIUM

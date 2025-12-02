@@ -1,0 +1,80 @@
+```
+==============================================================================
+SPLUNK DETECTION TEMPLATE
+==============================================================================
+Rule: [Name - e.g., "Multiple Failed Logins Followed by Success"]
+ID: SPL-[###]
+Author: [Your Name]
+Date: [YYYY-MM-DD]
+MITRE: [T####] [Technique Name]
+Severity: [LOW | MEDIUM | HIGH | CRITICAL]
+
+Schedule: Every 5 minutes (*/5 * * * *)
+Timeframe: -10m to now
+==============================================================================
+
+WHAT IT DETECTS:
+[Brief 1-line description of what this catches]
+
+THE QUERY:
+```
+
+index=security sourcetype=WinEventLog:Security EventCode IN (4625, 4624)
+| eval action=case(
+    EventCode=4625, "failure",
+    EventCode=4624, "success"
+)
+| stats 
+    count(eval(action="failure")) as failed_attempts,
+    count(eval(action="success")) as successful_attempts,
+    values(src_ip) as src_ips,
+    earliest(_time) as first_seen,
+    latest(_time) as last_seen
+    by user, dest
+| where failed_attempts >= 5 AND successful_attempts >= 1
+| eval 
+    severity = case(
+        failed_attempts >= 20, "CRITICAL",
+        failed_attempts >= 10, "HIGH",
+        1=1, "MEDIUM"
+    )
+| table user, dest, src_ips, failed_attempts, successful_attempts, severity
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- [List known FPs - e.g., "Service accounts, users mistyping passwords"]
+
+Exclusions (add to query if needed):
+| where NOT (user IN ("svc_*", "admin_service"))
+| where NOT (dest IN ("test-server"))
+
+Threshold Recommendations:
+- Small env: 5 failures + 1 success
+- Large env: 10 failures + 1 success
+
+==============================================================================
+TESTING
+==============================================================================
+Test: Generate 10 failed logins, then 1 successful login
+Expected: Alert showing user + destination + source IPs
+
+==============================================================================
+RESPONSE
+==============================================================================
+1. Verify user recognizes the login activity
+2. Check source IP reputation
+3. Review successful session for suspicious activity
+4. Force password reset if confirmed malicious
+5. Escalate if privileged account or external IP
+
+Notable Event (ES):
+| eval rule_id="SPL-001", mitre_technique="T1110"
+| collect index=notable_events
+
+References:
+- https://attack.mitre.org/techniques/T####/
+==============================================================================
+```

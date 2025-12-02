@@ -103,17 +103,7 @@ Organized into **8 practical categories** covering the full attack lifecycle:
   - Platform-specific TAs for your environment
 - Accelerated CIM data models: Authentication, Endpoint, Network Traffic
 
-### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/PrototypePrime/Splunk_SPL_Detection.git
-cd Splunk_SPL_Detection
-
-# Browse available detections
-ls -la Authentication/
-ls -la Endpoint/
-```
 
 ### Deploy a Detection
 
@@ -160,9 +150,9 @@ graph TD
     H --> I[8. Deploy to Production]
     I --> J[9. Monitor 48hrs]
     
-    style A fill:#e3f2fd
-    style I fill:#c8e6c9
-    style E fill:#fff9c4
+    style A fill:#d1e8ff,stroke:#0d6efd,stroke-width:2px
+    style I fill:#d1e7dd,stroke:#0f5132,stroke-width:2px
+    style E fill:#fff3cd,stroke:#ffc107,stroke-width:2px
 ```
 
 ### 1. Identify the Threat
@@ -311,66 +301,6 @@ index=notable sourcetype=stash search_name="T1110*"
 # Query performance
 index=_audit action=search info=completed savedsearch_name="T1110*"
 | stats avg(total_run_time) as avg_runtime
-```
-
----
-
-## 🔧 Detection Template Structure
-
-Each detection follows this standardized format:
-
-```spl
-```
-==============================================================================
-SPLUNK DETECTION TEMPLATE
-==============================================================================
-Rule: [Descriptive Name]
-ID: SPL-[###]
-Author: PrototypePrime
-Date: [YYYY-MM-DD]
-MITRE: [T####] [Technique Name]
-Severity: [CRITICAL | HIGH | MEDIUM | LOW]
-==============================================================================
-
-WHAT IT DETECTS:
-[Brief description of the threat this detection identifies]
-
-THE QUERY:
-```
-
-[SPL Query Here]
-
-```
-==============================================================================
-TUNING
-==============================================================================
-False Positives:
-- [List expected false positives]
-
-Exclusions:
-| where NOT (user IN ("service_account"))
-
-Thresholds:
-- Small env: [value]
-- Large env: [value]
-
-==============================================================================
-TESTING
-==============================================================================
-Test Command: [How to generate test event]
-Expected Result: [What alert should show]
-
-==============================================================================
-RESPONSE
-==============================================================================
-1. [Investigation step]
-2. [What to check]
-3. [Escalation criteria]
-
-References:
-- https://attack.mitre.org/techniques/T####/
-==============================================================================
-```
 ```
 
 ---

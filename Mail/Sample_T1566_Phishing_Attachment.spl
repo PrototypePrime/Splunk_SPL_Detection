@@ -1,0 +1,48 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - PHISHING ATTACHMENT
+==============================================================================
+Rule: Suspicious Email Attachment Extension
+ID: SPL-MAIL-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1566.001 (Spearphishing Attachment)
+Severity: HIGH
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies emails delivered with suspicious attachment extensions (exe, scr, vbs)
+that are commonly used to deliver malware.
+
+THE QUERY:
+```
+
+index=email sourcetype=cisco:esa
+| where match(attachment_name, "(?i)\.(exe|scr|vbs|js|bat|ps1)$")
+| stats 
+    count as email_count,
+    values(attachment_name) as attachments,
+    values(sender) as senders
+    by recipient, subject
+| eval severity="HIGH"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- Legitimate IT scripts sent via email (should be rare/discouraged)
+
+Exclusions:
+| where NOT sender IN ("it-support@internal.com")
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+Send an email to a test account with a dummy file named "test.exe".
+
+Expected Result:
+Alert triggers identifying the recipient and the suspicious attachment.
+==============================================================================
+```

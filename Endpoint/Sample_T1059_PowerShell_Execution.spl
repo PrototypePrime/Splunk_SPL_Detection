@@ -1,0 +1,50 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - SUSPICIOUS POWERSHELL
+==============================================================================
+Rule: Suspicious PowerShell Execution (Encoded/Download)
+ID: SPL-END-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1059.001 (PowerShell)
+Severity: HIGH
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies PowerShell processes running with encoded commands or attempting
+to download content from the internet, which are common malware behaviors.
+
+THE QUERY:
+```
+
+index=security sourcetype="WinEventLog:Security" EventCode=4688
+| where process_name="powershell.exe" OR process_name="pwsh.exe"
+| where match(process_command_line, "(?i)(-enc|-encodedcommand|downloadstring|iex|invoke-expression)")
+| stats 
+    count as execution_count,
+    values(process_command_line) as commands,
+    earliest(_time) as first_seen
+    by user, dest, parent_process_name
+| eval severity="HIGH"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- Admin scripts using encoded commands (rare but possible)
+- SCCM/Intune management scripts
+
+Exclusions:
+| where NOT match(parent_process_name, "(?i)ccmexec.exe")
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+powershell.exe -enc SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAJwBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgBUAGUAcwB0ACIAJwA=
+
+Expected Result:
+Alert triggers with "HIGH" severity for the test user.
+==============================================================================
+```

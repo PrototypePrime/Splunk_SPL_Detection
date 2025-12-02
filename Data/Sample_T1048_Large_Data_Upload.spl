@@ -1,0 +1,48 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - LARGE DATA UPLOAD
+==============================================================================
+Rule: Large Data Upload to External IP
+ID: SPL-DATA-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1048 (Exfiltration Over Alternative Protocol)
+Severity: MEDIUM
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies internal hosts uploading large amounts of data (>100MB) to external
+IP addresses within a short timeframe.
+
+THE QUERY:
+```
+
+index=network sourcetype=firewall action=allowed
+| bin _time span=1h
+| stats sum(bytes_out) as total_bytes_out by src_ip, dest_ip
+| where total_bytes_out > 104857600  # 100 MB
+| where NOT cidrmatch("10.0.0.0/8", dest_ip)
+| eval severity="MEDIUM"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- Video conferencing traffic
+- Backup jobs to cloud
+- Software uploads
+
+Exclusions:
+| where NOT dest_ip IN ("known_backup_server_ip")
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+Upload a 150MB file to an external FTP or HTTP server.
+
+Expected Result:
+Alert triggers identifying the source IP and destination.
+==============================================================================
+```

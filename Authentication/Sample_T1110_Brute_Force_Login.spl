@@ -1,0 +1,306 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - BRUTE FORCE LOGIN ATTACK
+==============================================================================
+Rule: Multiple Failed Login Attempts Followed by Success
+ID: SPL-AUTH-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1110.001 (Brute Force: Password Guessing)
+Severity: HIGH
+
+MITRE Tactic: Credential Access
+Data Source: Windows Event Logs, VPN Logs, SSH Logs
+CIM Data Model: Authentication
+==============================================================================
+
+WHAT IT DETECTS:
+Detects brute force attacks where an attacker tries multiple failed login
+attempts (5+) followed by at least one successful login, indicating
+potential credential compromise.
+
+ATTACK SCENARIO:
+1. Attacker obtains username from reconnaissance
+2. Attempts multiple password combinations (brute force)
+3. Eventually succeeds with correct password
+4. Gains initial access to target system
+
+==============================================================================
+SPL QUERY
+==============================================================================
+```
+
+index=security sourcetype=WinEventLog:Security EventCode IN (4625, 4624)
+| eval action=case(
+    EventCode=4625, "failure",
+    EventCode=4624, "success",
+    1=1, "unknown"
+)
+| stats 
+    count(eval(action="failure")) as failed_attempts,
+    count(eval(action="success")) as successful_attempts,
+    values(src_ip) as src_ips,
+    values(Logon_Type) as logon_types,
+    earliest(_time) as first_seen,
+    latest(_time) as last_seen
+    by user, dest
+| eval 
+    duration_seconds = last_seen - first_seen,
+    duration_minutes = round(duration_seconds/60, 2)
+| where failed_attempts >= 5 AND successful_attempts >= 1
+| eval 
+    risk_score = case(
+        failed_attempts >= 20, 90,
+        failed_attempts >= 10, 70,
+        failed_attempts >= 5, 50,
+        1=1, 30
+    ),
+    severity = case(
+        risk_score >= 80, "CRITICAL",
+        risk_score >= 60, "HIGH",
+        risk_score >= 40, "MEDIUM",
+        1=1, "LOW"
+    ),
+    detection_name = "T1110 - Brute Force Login Attack"
+| table 
+    _time, user, dest, src_ips, 
+    failed_attempts, successful_attempts, 
+    duration_minutes, logon_types, 
+    severity, risk_score, detection_name
+| sort - risk_score
+
+```
+==============================================================================
+QUERY EXPLANATION
+==============================================================================
+1. Search Windows Security logs for login events (4625=failed, 4624=success)
+2. Categorize each event as failure or success
+3. Aggregate by user and destination system
+4. Count failed vs successful attempts
+5. Filter for brute force pattern (5+ failures, 1+ success)
+6. Calculate risk score based on failure count
+7. Output investigation-ready fields
+
+Key Fields:
+- user: Target username
+- dest: Destination system
+- src_ips: Source IP addresses
+- failed_attempts: Number of failed login attempts
+- successful_attempts: Number of successful logins
+
+==============================================================================
+TUNING & OPTIMIZATION
+==============================================================================
+Known False Positives:
+- Service accounts with expired passwords
+- Users genuinely forgetting passwords (especially after long weekends)
+- Password policy changes requiring users to reset
+- Automated tools/scripts with hardcoded credentials
+
+Exclusions (add to query):
+# Exclude known service accounts
+| where NOT (user IN ("svc_backup", "svc_monitoring", "admin_service"))
+
+# Exclude internal admin systems
+| where NOT (dest IN ("admin-jumpbox-01", "test-server"))
+
+# Exclude legitimate admin IPs
+| where NOT match(src_ip, "^10\.100\.")
+
+Threshold Recommendations:
+- Small environment (<1000 users): 5 failures, 1 success
+- Medium environment (1000-5000 users): 8 failures, 1 success  
+- Large environment (>5000 users): 10 failures, 1 success
+
+Performance Optimization:
+# Use tstats for faster searches
+| tstats summariesonly=true count from datamodel=Authentication
+  where Authentication.action IN ("failure", "success")
+  by Authentication.user, Authentication.dest, Authentication.action
+  span=5m
+
+==============================================================================
+TESTING & VALIDATION
+==============================================================================
+Test Scenario:
+1. Generate 10 failed RDP login attempts to test account
+2. Perform 1 successful login with correct credentials
+3. Alert should trigger within search interval (5 minutes)
+
+Manual Test:
+# On Windows, attempt failed RDP logins:
+mstsc /v:target-host
+# Enter wrong password 10 times, then correct password
+
+Expected Result:
+- Alert for test user on target host
+- failed_attempts = 10
+- successful_attempts = 1
+- severity = HIGH
+
+Validation Checklist:
+☐ Query executes without syntax errors
+☐ Historical search shows expected results
+☐ False positive rate < 5%
+☐ Alert contains all required investigation fields
+☐ Tested with benign failed logins (doesn't trigger)
+☐ Tested with attack pattern (triggers correctly)
+☐ Query completes in < 30 seconds
+☐ Notable event created in Splunk ES
+
+==============================================================================
+RESPONSE & INVESTIGATION
+==============================================================================
+Severity: HIGH
+
+Triage Steps:
+1. Verify if user recognizes the login activity
+2. Check source IP reputation (internal vs external)
+3. Review successful login session for suspicious activity
+4. Check for lateral movement from compromised account
+5. Correlate with other security alerts for this user
+
+Investigation Playbook:
+
+Step 1: User Context
+index=* user=$user$ earliest=-24h
+| stats count by sourcetype, action, dest, src
+
+Step 2: Source IP Reputation
+| inputlookup threat_intel 
+| search ip=$src_ip$
+| table ip, threat_category, reputation_score
+
+Step 3: Post-Login Activity
+index=security sourcetype=WinEventLog:Security EventCode=4624 user=$user$
+earliest=-1h
+| stats dc(dest) as unique_systems, values(dest) as systems
+| where unique_systems > 3  # Lateral movement indicator
+
+Step 4: Privilege Escalation Check
+index=security sourcetype=WinEventLog:Security 
+EventCode IN (4672, 4728, 4732) user=$user$
+| table _time, EventCode, action, dest
+
+Investigation Questions:
+- Is this user account a privileged account?
+- Does the user typically log in from this source IP/location?
+- Was MFA satisfied during the successful login?
+- Are there signs of account takeover (password change, email rules)?
+- Has the user reported any phishing emails recently?
+
+Immediate Actions:
+- Contact user to verify legitimacy
+- Disable account if compromise confirmed
+- Force password reset
+- Revoke active sessions
+- Review recent account changes
+
+Escalation Criteria:
+- Privileged account targeted (Domain Admin, etc.)
+- External/foreign source IP
+- User does not recognize the activity
+- Followed by data exfiltration or privilege escalation
+- Part of coordinated attack campaign
+
+==============================================================================
+AUTOMATION & SOAR INTEGRATION
+==============================================================================
+Notable Event Configuration (Splunk ES):
+| eval 
+    rule_id="SPL-AUTH-001",
+    rule_name="Brute Force Login Detection",
+    mitre_tactic="Credential Access",
+    mitre_technique_id="T1110.001",
+    asset=dest,
+    identity=user,
+    urgency=severity
+| collect index=notable_events sourcetype=stash
+
+Risk-Based Alerting (RBA):
+| eval 
+    risk_object=user,
+    risk_object_type="user",
+    risk_score=50,
+    risk_message="Brute force login detected for user " + user + " on " + dest
+| collect index=risk sourcetype=risk_event
+
+SOAR Playbook Actions:
+1. Enrich source IP with threat intelligence (VirusTotal, AbuseIPDB)
+2. Query AD for user account status and group memberships
+3. Send notification to user and manager (Email/Slack/Teams)
+4. Create ServiceNow incident ticket (Priority: High)
+5. If external IP: Temporary block at firewall
+6. If confirmed malicious: Disable account, force logout
+
+==============================================================================
+CORRELATION WITH OTHER DETECTIONS
+==============================================================================
+Related Rules:
+- SPL-AUTH-002: Password Spray Attack (multiple users from same IP)
+- SPL-AUTH-003: Impossible Travel Detection
+- SPL-LATERAL-001: Lateral Movement via RDP
+- SPL-PERSIST-003: Scheduled Task Creation Post-Compromise
+
+Attack Chain Correlation:
+# Detect multi-stage attack
+index=notable
+| stats values(search_name) as detections, 
+        earliest(_time) as first_alert,
+        latest(_time) as last_alert
+    by user
+| where mvcount(detections) > 1
+| eval attack_pattern="Coordinated attack detected"
+
+Upstream Indicators:
+- Phishing email delivery to user
+- Credential leak in paste sites (threat intel feeds)
+
+Downstream Activities:
+- Privilege escalation attempts
+- Data access/exfiltration
+- Persistence mechanism creation
+
+==============================================================================
+REFERENCES & DOCUMENTATION
+==============================================================================
+MITRE ATT&CK:
+- https://attack.mitre.org/techniques/T1110/001/
+
+Splunk Documentation:
+- https://docs.splunk.com/Documentation/CIM/latest/User/Authentication
+- https://docs.splunk.com/Documentation/ES/latest/Admin/Configurecorrelationsearches
+
+External References:
+- NIST 800-63B: Digital Identity Guidelines
+- CIS Controls v8: 6.2 (Establish Password Policy)
+
+Internal Documentation:
+- Runbook: Brute Force Response Procedures
+- Playbook: SOAR_Playbook_BruteForce_v1.2
+- Escalation Matrix: Security Operations
+
+==============================================================================
+CHANGE LOG
+==============================================================================
+Version 1.0 - 2025-12-02 - PrototypePrime
+- Initial rule creation
+- Set baseline thresholds: 5 failures, 1 success
+- Tested against 30 days of production data
+
+==============================================================================
+METADATA TAGS
+==============================================================================
+Platform: Splunk Enterprise Security
+Data Source: Windows Event Logs, VPN Logs
+Detection Type: Behavioral Analytics
+Confidence: High
+MITRE Tactic: Credential Access
+Environment: Production
+Status: Active
+Alert Frequency: Real-time (5 min intervals)
+Data Retention: 90 days
+Compliance: PCI-DSS 10.2.4, NIST 800-53 AC-7
+
+==============================================================================
+```

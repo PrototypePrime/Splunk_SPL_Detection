@@ -1,0 +1,49 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - AWS CONSOLE LOGIN WITHOUT MFA
+==============================================================================
+Rule: AWS Console Login Without MFA
+ID: SPL-CLOUD-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1078.004 (Cloud Accounts)
+Severity: MEDIUM
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies AWS Console logins that did not use Multi-Factor Authentication,
+which violates security best practices and increases compromise risk.
+
+THE QUERY:
+```
+
+index=aws sourcetype=aws:cloudtrail eventName=ConsoleLogin
+| where json_extract(additionalEventData, "$.MFAUsed") == "No"
+| stats 
+    count as login_count,
+    values(sourceIPAddress) as src_ips,
+    earliest(_time) as first_seen
+    by userIdentity.userName, awsRegion
+| eval severity="MEDIUM"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- SSO/Federated logins where MFA is handled by IdP (check documentation)
+- Break-glass accounts (should be alerted anyway)
+
+Exclusions:
+| where NOT userIdentity.userName IN ("emergency-admin")
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+Login to AWS Console with a user that has MFA disabled.
+
+Expected Result:
+Alert triggers showing the username and source IP.
+==============================================================================
+```

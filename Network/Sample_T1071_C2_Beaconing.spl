@@ -1,0 +1,55 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - C2 BEACONING
+==============================================================================
+Rule: High Frequency Connection to Rare Destination (Potential C2)
+ID: SPL-NET-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1071.001 (Web Protocols)
+Severity: HIGH
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies internal hosts making frequent, periodic connections to external
+IPs that are rare in the environment, indicative of C2 beaconing.
+
+THE QUERY:
+```
+
+index=network sourcetype=firewall action=allowed
+| bin _time span=5m
+| stats count as conn_count by src_ip, dest_ip, dest_port
+| eventstats sum(conn_count) as total_conns by src_ip
+| where conn_count > 10 AND total_conns > 100
+| stats 
+    dc(src_ip) as unique_sources,
+    values(src_ip) as infected_hosts,
+    sum(conn_count) as total_beacons
+    by dest_ip, dest_port
+| where unique_sources < 5  # Rare destination (few hosts talking to it)
+| eval severity="HIGH"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- NTP servers
+- Software update services
+- Cloud telemetry endpoints
+
+Exclusions:
+| where NOT cidrmatch("10.0.0.0/8", dest_ip)
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+Use a tool like 'caldera' or simple python script to send HTTP requests 
+every 5 seconds to an external IP.
+
+Expected Result:
+Alert triggers identifying the source IP and the external C2 IP.
+==============================================================================
+```

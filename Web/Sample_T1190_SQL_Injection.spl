@@ -1,0 +1,49 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - SQL INJECTION
+==============================================================================
+Rule: SQL Injection Attempt Pattern
+ID: SPL-WEB-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1190 (Exploit Public-Facing Application)
+Severity: HIGH
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies common SQL injection patterns in web server access logs (URI or
+POST parameters).
+
+THE QUERY:
+```
+
+index=web sourcetype=access_combined
+| where match(uri_query, "(?i)(union select|OR 1=1|--|;|xp_cmdshell)")
+| stats 
+    count as attempt_count,
+    values(uri_query) as payloads,
+    values(clientip) as attackers
+    by host, uri_path
+| eval severity="HIGH"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- Web scanners (Qualys, Nessus)
+- Poorly coded applications using SQL keywords in URLs
+
+Exclusions:
+| where NOT clientip IN ("192.168.1.50") # Scanner IP
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+curl "http://target-site/search?q=union select 1,2,3"
+
+Expected Result:
+Alert triggers showing the attacker IP and the payload.
+==============================================================================
+```

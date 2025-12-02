@@ -1,29 +1,21 @@
 # Network Detections
 
-Detection rules for network-based threats and suspicious traffic patterns.
+Detection rules focusing on network traffic anomalies, C2 communication, and lateral movement.
 
-## What Goes Here
-
-- Command & Control (C2) beaconing
-- Lateral movement
-- Port scanning
-- DNS tunneling
+## 🎯 What Goes Here
+- Command and Control (C2) beaconing
+- Lateral movement (SMB, RDP, SSH)
 - Data exfiltration over network
-- Suspicious connections
+- Port scanning and reconnaissance
+- Suspicious DNS queries (Tunneling, DGA)
 
-## Common Techniques (MITRE)
+## 🔍 Common MITRE Techniques
+| ID | Technique | Description |
+|----|-----------|-------------|
+| **T1071** | Application Layer Protocol | C2 over HTTP/S, DNS |
+| **T1021** | Remote Services | RDP, SMB, SSH abuse |
+| **T1048** | Exfiltration Over Alternative Protocol | Data theft via FTP, SSH |
+| **T1568** | Dynamic Resolution | DGA domains |
 
-- **T1071** - Application Layer Protocol (C2)
-- **T1021** - Remote Services (Lateral Movement)
-- **T1090** - Proxy
-- **T1048** - Exfiltration Over Alternative Protocol
-- **T1046** - Network Service Scanning
-
-## Quick Examples
-
-```
-# Valid detection names:
-T1071_C2_Beaconing_Detection.spl
-T1021_RDP_Lateral_Movement.xql
-T1048_DNS_Exfiltration.kql
-```
+## 🚀 Sample Detection
+See `Sample_T1071_C2_Beaconing.spl` for a production-ready example of detecting C2 beaconing patterns.

@@ -1,30 +1,20 @@
 # Identity Detections
 
-Detection rules for identity and access management (IAM) threats.
+Detection rules for identity and access management (IAM) abuse.
 
-## What Goes Here
-
+## 🎯 What Goes Here
 - Privilege escalation
-- Role/group changes
-- Service account abuse
+- New account creation
+- Group membership changes
 - Token theft/manipulation
-- Suspicious admin activity
-- Identity federation abuse
-- Permission changes
+- Service account abuse
 
-## Common Techniques (MITRE)
+## 🔍 Common MITRE Techniques
+| ID | Technique | Description |
+|----|-----------|-------------|
+| **T1098** | Account Manipulation | Adding user to Domain Admins |
+| **T1078** | Valid Accounts | Abuse of existing creds |
+| **T1136** | Create Account | Persistence via new user |
 
-- **T1078** - Valid Accounts (all sub-techniques)
-- **T1098** - Account Manipulation
-- **T1134** - Access Token Manipulation
-- **T1136** - Create Account
-- **T1484** - Domain Policy Modification
-
-## Quick Examples
-
-```
-# Valid detection names:
-T1098_Azure_Privilege_Escalation.kql
-T1136_Suspicious_Account_Creation.spl
-T1134_Token_Impersonation.xql
-```
+## 🚀 Sample Detection
+See `Sample_T1098_Privileged_Group_Modification.spl` for a production-ready example.

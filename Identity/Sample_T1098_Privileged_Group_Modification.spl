@@ -1,0 +1,48 @@
+```
+==============================================================================
+SPLUNK SPL DETECTION - PRIVILEGED GROUP MODIFICATION
+==============================================================================
+Rule: User Added to Privileged Group (Domain Admins)
+ID: SPL-ID-001
+Author: PrototypePrime
+Date: 2025-12-02
+MITRE: T1098 (Account Manipulation)
+Severity: CRITICAL
+==============================================================================
+
+WHAT IT DETECTS:
+Identifies when a user is added to high-privilege groups like "Domain Admins"
+or "Enterprise Admins" in Active Directory.
+
+THE QUERY:
+```
+
+index=security sourcetype=WinEventLog:Security EventCode IN (4728, 4732, 4756)
+| where match(TargetUserName, "(?i)(Domain Admins|Enterprise Admins|Administrators)")
+| stats 
+    count,
+    values(MemberName) as added_user,
+    values(SubjectUserName) as actor
+    by TargetUserName, dest
+| eval severity="CRITICAL"
+
+```
+==============================================================================
+TUNING
+==============================================================================
+False Positives:
+- Legitimate administrative changes (Change Management)
+
+Exclusions:
+| where NOT SubjectUserName IN ("authorized_admin")
+
+==============================================================================
+TESTING
+==============================================================================
+Test Command: 
+net group "Domain Admins" testuser /add /domain
+
+Expected Result:
+Alert triggers showing the actor and the added user.
+==============================================================================
+```

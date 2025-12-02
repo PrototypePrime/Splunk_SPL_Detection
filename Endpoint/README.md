@@ -1,29 +1,21 @@
 # Endpoint Detections
 
-Detection rules for host-based threats and suspicious endpoint activity.
+Detection rules focusing on host-based threats, malware execution, and persistence mechanisms.
 
-## What Goes Here
+## 🎯 What Goes Here
+- Malware execution (Ransomware, Trojans)
+- Suspicious process behavior (PowerShell, CMD)
+- Persistence mechanisms (Registry, Scheduled Tasks)
+- Privilege escalation on endpoints
+- Anti-virus/EDR tampering
 
-- Suspicious process execution
-- Malware behavior
-- Persistence mechanisms
-- Privilege escalation
-- Defense evasion techniques
-- Fileless attacks
+## 🔍 Common MITRE Techniques
+| ID | Technique | Description |
+|----|-----------|-------------|
+| **T1059** | Command and Scripting Interpreter | PowerShell, CMD, Python abuse |
+| **T1055** | Process Injection | Code injection into legitimate processes |
+| **T1053** | Scheduled Task/Job | Persistence via scheduled tasks |
+| **T1547** | Boot or Logon Autostart Execution | Registry run keys, startup folders |
 
-## Common Techniques (MITRE)
-
-- **T1059** - Command and Scripting Interpreter
-- **T1053** - Scheduled Task/Job
-- **T1547** - Boot or Logon Autostart Execution
-- **T1055** - Process Injection
-- **T1562** - Impair Defenses
-
-## Quick Examples
-
-```
-# Valid detection names:
-T1059_PowerShell_Encoded_Command.xql
-T1053_Suspicious_Scheduled_Task.spl
-T1055_Process_Injection.kql
-```
+## 🚀 Sample Detection
+See `Sample_T1059_PowerShell_Execution.spl` for a production-ready example of detecting suspicious PowerShell activity.

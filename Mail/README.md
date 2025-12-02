@@ -1,30 +1,20 @@
-# Mail/Email Detections
+# Mail Detections
 
-Detection rules for email-based threats and phishing attacks.
+Detection rules for email-based threats, phishing, and business email compromise (BEC).
 
-## What Goes Here
-
-- Phishing campaigns
-- Business Email Compromise (BEC)
+## 🎯 What Goes Here
+- Phishing attempts
 - Malicious attachments
-- Email forwarding rules (auto-forward abuse)
-- Spoofed sender detection
-- Suspicious email links
-- Large volume email sends
+- Suspicious forwarding rules
+- BEC / CEO Fraud
+- Mass email sending
 
-## Common Techniques (MITRE)
+## 🔍 Common MITRE Techniques
+| ID | Technique | Description |
+|----|-----------|-------------|
+| **T1566** | Phishing | Spearphishing attachments/links |
+| **T1114** | Email Collection | Accessing user inboxes |
+| **T1087** | Account Discovery | Email address harvesting |
 
-- **T1566** - Phishing (all sub-techniques)
-- **T1534** - Internal Spearphishing
-- **T1114** - Email Collection
-- **T1087** - Email Account Discovery
-- **T1598** - Phishing for Information
-
-## Quick Examples
-
-```
-# Valid detection names:
-T1566_Phishing_With_Malicious_Attachment.spl
-T1114_Suspicious_Email_Forwarding_Rule.kql
-T1566_CEO_Fraud_BEC.spl
-```
+## 🚀 Sample Detection
+See `Sample_T1566_Phishing_Attachment.spl` for a production-ready example.

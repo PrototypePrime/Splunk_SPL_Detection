@@ -1,0 +1,33 @@
+```spl
+# ==============================================================================
+# SPLUNK ANOMALY DETECTION TEMPLATE
+# Method: Statistical Baseline Deviation (Z-Score / IQR)
+# ==============================================================================
+# Rule Name: [Metric] Anomaly
+# Description: Detects deviations > 3 standard deviations from the baseline.
+#
+# Baseline Period: 30 days
+# Analysis Period: 1 hour
+# ==============================================================================
+
+# --- BASELINE CALCULATION (Run daily/weekly to update lookup) ---
+# index=network
+# | bin _time span=1h
+# | stats sum(bytes_out) as total_bytes by _time, src_ip
+# | stats avg(total_bytes) as avg_bytes stdev(total_bytes) as stdev_bytes by src_ip
+# | outputlookup network_baseline.csv
+
+# --- DETECTION QUERY ---
+index=network earliest=-1h
+| stats sum(bytes_out) as current_bytes by src_ip
+| lookup network_baseline.csv src_ip OUTPUT avg_bytes, stdev_bytes
+| where isnotnull(avg_bytes)
+
+# Calculate Z-Score
+| eval z_score = (current_bytes - avg_bytes) / stdev_bytes
+
+# Filter for Anomalies (e.g., > 3 sigma)
+| where z_score > 3
+| table src_ip, current_bytes, avg_bytes, stdev_bytes, z_score
+| sort - z_score
+```

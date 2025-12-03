@@ -1,0 +1,44 @@
+```spl
+# ==============================================================================
+# SPLUNK STANDARD ALERT TEMPLATE
+# Framework: MITRE ATT&CK / Cyber Kill Chain
+# ==============================================================================
+# Rule Name: [Technique Name] - [Specific Behavior]
+# Author: [Your Name]
+# Date: [YYYY-MM-DD]
+# Version: 1.0
+#
+# MITRE ATT&CK:
+# - Tactic: [TA####] [Tactic Name]
+# - Technique: [T####] [Technique Name]
+# - Sub-technique: [T####.###] [Name]
+#
+# Severity: [LOW | MEDIUM | HIGH | CRITICAL]
+# Status: [Development | Staging | Production]
+#
+# Description:
+# [Detailed description of the detection logic and the threat it addresses.]
+#
+# Data Source:
+# - Index: [security | network | endpoint]
+# - Sourcetype: [WinEventLog:Security | XmlWinEventLog | stream:http]
+#
+# ==============================================================================
+
+# --- THE QUERY ---
+index=security sourcetype=WinEventLog:Security EventCode=4688
+| search NewProcessName="*\\powershell.exe"
+    AND CommandLine="*-enc*"
+| stats count min(_time) as first_seen max(_time) as last_seen values(CommandLine) as commands by user, dest, ParentProcessName
+| where count > 0
+
+# --- ENRICHMENT ---
+| eval 
+    mitre_technique_id = "T1059.001",
+    mitre_tactic = "Execution",
+    severity = "MEDIUM",
+    rule_name = "Suspicious PowerShell Execution"
+
+# --- OUTPUT ---
+| table first_seen, last_seen, user, dest, ParentProcessName, commands, severity, mitre_technique_id
+```

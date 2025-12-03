@@ -1,0 +1,33 @@
+```spl
+# ==============================================================================
+# SPLUNK THREAT HUNTING TEMPLATE
+# Framework: Hypothesis-Driven Hunting (PEAK)
+# ==============================================================================
+# Hunt Name: [Name]
+# Hypothesis: [e.g., "Adversaries are using rare LOLBins to evade detection."]
+#
+# Goal: [What are we trying to find?]
+# Scope: [Timeframe, specific subnets, specific host groups]
+#
+# Assumptions:
+# 1. Logs are available for the target timeframe.
+# 2. Baseline of "normal" is understood.
+# ==============================================================================
+
+# --- HUNT QUERY ---
+
+# Step 1: Broad Search
+index=security sourcetype=WinEventLog:Security EventCode=4688
+| where _time >= relative_time(now(), "-7d")
+
+# Step 2: Filter Known Good (The "Noise")
+| search NOT (NewProcessName IN ("*\\svchost.exe", "*\\explorer.exe"))
+
+# Step 3: Look for Outliers / Rare Events
+| stats count values(CommandLine) as cmds by NewProcessName
+| where count < 5  # Rare execution frequency
+
+# Step 4: Investigate
+| sort count asc
+| table NewProcessName, count, cmds
+```

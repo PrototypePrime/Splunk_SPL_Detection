@@ -168,7 +168,14 @@ Choose a MITRE ATT&CK technique relevant to your environment:
 ### 2. Copy the Template
 
 ```bash
-cp TEMPLATE_SPL_Detection.spl Authentication/T1110_RDP_Brute_Force.spl
+# Standard Production Alert (MITRE Aligned)
+cp templates/TEMPLATE_Standard_Alert.spl rules/Authentication/T1110_Brute_Force.spl
+
+# Threat Hunting Hypothesis
+cp templates/TEMPLATE_Threat_Hunting.spl rules/Hunting/Hunt_T1110_Anomalies.spl
+
+# Statistical Anomaly Detection
+cp templates/TEMPLATE_Anomaly_Detection.spl rules/Anomaly/T1110_Baseline_Deviation.spl
 ```
 
 ### 3. Write the SPL Query
@@ -206,13 +213,23 @@ index=security sourcetype=WinEventLog:Security EventCode IN (4625, 4624)
 <details>
 <summary><b>💡 SPL Best Practices</b></summary>
 
-**Performance Optimization:**
+**Performance Optimization: `tstats` vs `index`**
+
+| Feature | `tstats` (Metadata Search) | `index` (Raw Event Search) |
+| :--- | :--- | :--- |
+| **Speed** | ⚡ **Extremely Fast** (100x+ faster) | 🐢 **Slow** (Linear scan) |
+| **Mechanism** | Scans `.tsidx` files (indexed fields only) | Retrieves raw events, decompresses, extracts fields |
+| **Pros** | • Blazing fast for aggregations<br>• Low resource usage<br>• Ideal for long timeframes (30d+) | • Access to `_raw` data<br>• Can search non-indexed fields<br>• Supports regex on raw text |
+| **Cons** | • Cannot see `_raw` payload<br>• Requires Data Models or indexed fields<br>• "Summariesonly" lag (if accelerated) | • High CPU/IO usage<br>• Slow over long timeframes<br>• Impacted by "noisy" data |
+
+**Recommendation:** Always start with `tstats` for detection logic (filtering/aggregation). Only use `index` searches when you need to inspect the raw payload or extract fields at search time.
+
 ```spl
-# ✅ GOOD - Uses tstats for speed
+# ✅ GOOD - Uses tstats (Metadata Search)
 | tstats summariesonly=true count from datamodel=Authentication
   where Authentication.action="failure" by Authentication.user
 
-# ❌ AVOID - Full index scan (slow)
+# ❌ AVOID - Uses index (Full Event Scan)
 index=* | search action="failure" | stats count by user
 ```
 
@@ -405,14 +422,27 @@ Map to Common Information Model for portability:
 
 ### Automated Testing
 
-Use [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) to validate detections:
+**Recommended Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event-Horizon)
 
-```powershell
-# Install Atomic Red Team
-Install-Module -Name invoke-atomicredteam -Scope CurrentUser
+Use **Event-Horizon** to generate production-quality security logs for validation:
+- **Realistic Data:** Generate logs for 80+ technologies (Palo Alto, Windows, AWS, etc.).
+- **Golden Master Templates:** Ensure 100% format accuracy for testing field extractions.
+- **AI Attack Simulation:** Orchestrate coordinated kill chains to validate correlation rules.
+- **Dashboard Validation:** Populate dashboards with realistic traffic to ensure no "No results found" errors.
 
-# Test specific technique
-Invoke-AtomicTest T1110.001 -TestNumbers 1
+### Automated Testing
+
+**Recommended Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event-Horizon)
+
+Use **Event-Horizon** to generate production-quality security logs for validation:
+- **Realistic Data:** Generate logs for 80+ technologies (Palo Alto, Windows, AWS, etc.).
+- **Golden Master Templates:** Ensure 100% format accuracy for testing field extractions.
+- **AI Attack Simulation:** Orchestrate coordinated kill chains to validate correlation rules.
+- **Dashboard Validation:** Populate dashboards with realistic traffic to ensure no "No results found" errors.
+
+```bash
+# Example: Generate 100 Windows Security Logs
+python main.py --sourcetype WinEventLog:Security --count 100
 ```
 
 ### Manual Validation Checklist
@@ -499,7 +529,7 @@ We welcome high-quality detection contributions!
 
 ### Submission Requirements
 
-✅ **Template compliance** - Use `TEMPLATE_SPL_Detection.spl`  
+✅ **Template compliance** - Use `TEMPLATE_Standard_Alert.spl` for production rules  
 ✅ **Testing documentation** - Include test results (TP/FP counts)  
 ✅ **Environment notes** - Document environment-specific tuning  
 ✅ **Screenshots** - Add example alert screenshots  

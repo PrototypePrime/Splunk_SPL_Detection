@@ -12,7 +12,7 @@
 
 ### Scenario A: True Positive (The Attack)
 * **Description:** Simulate the exact attack technique.
-* **Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event-Horizon)
+* **Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon)
 * **Command:**
   ```bash
   [Insert command here]

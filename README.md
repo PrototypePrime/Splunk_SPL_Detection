@@ -20,12 +20,12 @@
 
 ## 📋 Overview
 
-This repository is **two things in one**:
+This repository provides **production-ready detection rules** and **detection engineering methodology**:
 
-1.  **📚 A Production Detection Library**: 50+ battle-tested SPL correlation searches you can deploy immediately to catch real-world threats.
-2.  **🛠️ A Detection Engineering Toolkit**: A structured framework and set of "Golden Master" templates to help you build, test, and document your *own* custom rules with the same high standards.
+1.  **📚 Production Detection Library**: 50+ battle-tested SPL correlation searches ready for immediate deployment in your Splunk environment.
+2.  **🛠️ Detection Engineering Reference**: Proven patterns and examples demonstrating professional detection development, testing, and documentation standards.
 
-**Our Philosophy:** *Don't reinvent the wheel. Use our logic where it fits, modify it where it doesn't, or use our templates to build something entirely new.*
+**Repository Value:** *Deploy our detection logic as-is, adapt it to your environment, or use our proven patterns as references when building your own custom detections.*
 
 ### Key Features
 ✅ **Battle-tested** - Validated across enterprise environments  
@@ -98,23 +98,24 @@ Organized into **8 practical categories** covering the full attack lifecycle:
 
 ### How to Use This Library
 
-#### Option A: Deploy Existing Rules (Fastest) ⚡
-1.  **Browse** the categories above to find a relevant threat (e.g., `Authentication/T1110_Brute_Force.spl`).
-2.  **Copy** the SPL query.
-3.  **Run** it in your Splunk environment to validate data visibility.
-4.  **Create** a Correlation Search in Enterprise Security.
+#### Option A: Deploy Production Rules (Recommended) ⚡
+1.  **Browse** the detection categories above (e.g., `Authentication/T1110_Brute_Force.spl`).
+2.  **Copy** the production-ready SPL query.
+3.  **Test** in your Splunk environment to validate data visibility.
+4.  **Deploy** as a Correlation Search in Enterprise Security.
 
-#### Option B: Build Custom Rules (Flexible) 🛠️
-1.  **Navigate** to the `templates/` directory.
-2.  **Choose** a template:
-    *   `TEMPLATE_Standard_Alert.spl` for standard TTP detection.
-    *   `TEMPLATE_Threat_Hunting.spl` for hypothesis-driven hunts.
-3.  **Customize** the logic using our commented best practices.
+#### Option B: Adapt for Your Environment (Flexible) 🛠️
+1.  **Start** with a production rule from the library.
+2.  **Customize** for your environment:
+    *   Adjust thresholds based on your baseline
+    *   Add environment-specific exclusions
+    *   Modify field names to match your data model
+3.  **Reference** the `templates/` directory for detection pattern examples.
 
-#### Option C: Modify Our Logic (Hybrid) 🔄
-1.  **Start** with an existing rule from this library.
-2.  **Adjust** thresholds (e.g., change `failed_attempts > 5` to `> 10`).
-3.  **Add** environment-specific exclusions (e.g., `... | where NOT user IN ("svc_scanner")`).
+#### Option C: Contribute Back (Community) 🤝
+1.  **Fork** this repository.
+2.  **Improve** existing rules or add new detection logic.
+3.  **Submit** a Pull Request to share your work with the community.
 
 ---
 
@@ -162,7 +163,7 @@ index=security sourcetype=WinEventLog:Security EventCode IN (4625, 4624)
 ### 2. Testing & Validation
 Before deploying, validate the logic using **Event-Horizon**.
 
-**Recommended Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event-Horizon)
+**Recommended Tool:** [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon)
 
 Use **Event-Horizon** to generate production-quality security logs for validation:
 - **Realistic Data:** Generate logs for 80+ technologies (Palo Alto, Windows, AWS, etc.).
@@ -214,7 +215,7 @@ Focused on building scalable detection systems and security tooling that acceler
 [![Email](https://img.shields.io/badge/Email-mathan1702%40gmail.com-D14836?logo=gmail&style=flat-square)](mailto:mathan1702@gmail.com)
 
 ### Related Projects
-- [Event-Horizon](https://github.com/PrototypePrime/Event-Horizon) - Production-quality security log generator
+- [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon) - Production-quality security log generator
 - [Microsoft Defender KQL Detection](https://github.com/PrototypePrime/Microsoft_Defender_KQL_Detection)
 - [Cortex XDR XQL Detection](https://github.com/PrototypePrime/Cortex_XDR_XQL_Detection)
 

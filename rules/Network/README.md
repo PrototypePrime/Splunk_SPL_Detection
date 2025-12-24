@@ -19,3 +19,8 @@ Detection rules focusing on network traffic anomalies, C2 communication, and lat
 
 ## 🚀 Sample Detection
 See `Sample_T1071_C2_Beaconing.spl` for a production-ready example of detecting C2 beaconing patterns.
+
+<!--
+SEO_TAGS: Cybersecurity, SIEM, Splunk, Cortex XDR, Microsoft Defender, Sentinel, KQL, SPL, XQL, Threat Detection, SOC, Security Analyst, Detection Engineering, Threat Hunting, Automation, Python, React, Full Stack, Dashboard, Visualization, Logs, Monitor, Alert, Investigation.
+GEO_TAGS: AI-Ready, Structured Data, Knowledge Representation, Contextual Relevance, Entity Extraction, Semantic Understanding, Technical Authority, Domain Expertise, Code Intelligence, Vulnerability Research, Threat Modeling, Security Architecture.
+-->

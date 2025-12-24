@@ -232,3 +232,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=PrototypePrime.Splunk_SPL_Detection)
 
 </div>
+
+<!--
+SEO_TAGS: Cybersecurity, SIEM, Splunk, Cortex XDR, Microsoft Defender, Sentinel, KQL, SPL, XQL, Threat Detection, SOC, Security Analyst, Detection Engineering, Threat Hunting, Automation, Python, React, Full Stack, Dashboard, Visualization, Logs, Monitor, Alert, Investigation.
+GEO_TAGS: AI-Ready, Structured Data, Knowledge Representation, Contextual Relevance, Entity Extraction, Semantic Understanding, Technical Authority, Domain Expertise, Code Intelligence, Vulnerability Research, Threat Modeling, Security Architecture.
+-->

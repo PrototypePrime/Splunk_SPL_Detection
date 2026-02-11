@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1078.004 - Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) |
 | **Severity** | MEDIUM |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies AWS Console logins that did not use Multi-Factor Authentication, which violates security best practices and increases compromise risk.
@@ -22,14 +22,13 @@ Identifies AWS Console logins that did not use Multi-Factor Authentication, whic
 
 ## 🔍 SPL Query
 ```spl
-index=aws sourcetype=aws:cloudtrail eventName=ConsoleLogin
-| where json_extract(additionalEventData, "$.MFAUsed") == "No"
+index=aws sourcetype=aws:cloudtrail eventName=ConsoleLogin "additionalEventData.MFAUsed"=No
+| convert ctime(_time) as Time 
 | stats 
     count as login_count,
     values(sourceIPAddress) as src_ips,
-    earliest(_time) as first_seen
+    earliest(Time) as first_seen
     by userIdentity.userName, awsRegion
-| eval severity="MEDIUM"
 ```
 
 ---

@@ -12,7 +12,7 @@
 | **MITRE Tactic** | [Tactic Name] |
 | **MITRE Technique** | [Txxxx - Name](https://attack.mitre.org/techniques/Txxxx/) |
 | **Status** | Development |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## 🔬 Hunt Logic
 ```spl

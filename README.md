@@ -87,6 +87,7 @@ Organized into **8 practical categories** covering the full attack lifecycle:
 <sub>Privilege Escalation • Role Changes</sub>
 </td>
 </tr>
+</tr>
 </table>
 
 ---

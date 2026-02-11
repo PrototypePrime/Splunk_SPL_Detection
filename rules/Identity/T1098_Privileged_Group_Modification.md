@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/) |
 | **Severity** | CRITICAL |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies when a user is added to high-privilege groups like "Domain Admins" or "Enterprise Admins" in Active Directory.
@@ -29,7 +29,6 @@ index=security sourcetype=WinEventLog:Security EventCode IN (4728, 4732, 4756)
     values(MemberName) as added_user,
     values(SubjectUserName) as actor
     by TargetUserName, dest
-| eval severity="CRITICAL"
 ```
 
 ---

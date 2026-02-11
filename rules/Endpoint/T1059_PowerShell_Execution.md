@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1059.001 - PowerShell](https://attack.mitre.org/techniques/T1059/001/) |
 | **Severity** | HIGH |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies PowerShell processes running with encoded commands or attempting to download content from the internet, which are common malware behaviors.
@@ -30,7 +30,6 @@ index=security sourcetype="WinEventLog:Security" EventCode=4688
     values(process_command_line) as commands,
     earliest(_time) as first_seen
     by user, dest, parent_process_name
-| eval severity="HIGH"
 ```
 
 ---

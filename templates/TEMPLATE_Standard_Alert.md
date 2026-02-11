@@ -8,7 +8,7 @@
 | **MITRE Technique** | [Txxxx - Name](https://attack.mitre.org/techniques/Txxxx/) |
 | **Severity** | HIGH |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Detailed description of the detection logic. Explain *what* is being detected and *why* it is suspicious.
@@ -30,7 +30,7 @@ index=security sourcetype=WinEventLog:Security EventCode=4688
     min(_time) as first_seen 
     max(_time) as last_seen 
     values(CommandLine) as commands 
-    by user, dest, ParentProcessName
+    by user, dest, src_ipProcessName
 | where count > 0
 # -- False Positive Filtering --
 # | search NOT [ inputlookup allowable_admins.csv ]

@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/) |
 | **Severity** | HIGH |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies common SQL injection patterns in web server access logs (URI or POST parameters).
@@ -28,8 +28,7 @@ index=web sourcetype=access_combined
     count as attempt_count,
     values(uri_query) as payloads,
     values(clientip) as attackers
-    by host, uri_path
-| eval severity="HIGH"
+    by src_ip, dest_url
 ```
 
 ---

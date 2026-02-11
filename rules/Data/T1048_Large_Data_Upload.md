@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1048 - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/) |
 | **Severity** | MEDIUM |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies internal hosts uploading large amounts of data (>500MB) to external IP addresses. This rule enriches the destination IP with DNS data to provide context.

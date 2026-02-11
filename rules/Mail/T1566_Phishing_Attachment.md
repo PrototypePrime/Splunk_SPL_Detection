@@ -6,9 +6,8 @@
 | **ID** | `SPL-MAIL-001` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1566.001 - Spearphishing Attachment](https://attack.mitre.org/techniques/T1566/001/) |
-| **Severity** | HIGH |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies emails delivered with suspicious attachment extensions (exe, scr, vbs) that are commonly used to deliver malware.
@@ -29,7 +28,6 @@ index=email sourcetype=cisco:esa
     values(attachment_name) as attachments,
     values(sender) as senders
     by recipient, subject
-| eval severity="HIGH"
 ```
 
 ---

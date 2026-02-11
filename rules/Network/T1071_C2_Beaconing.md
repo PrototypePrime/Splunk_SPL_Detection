@@ -8,7 +8,7 @@
 | **MITRE Technique** | [T1071.001 - Web Protocols](https://attack.mitre.org/techniques/T1071/001/) |
 | **Severity** | HIGH |
 | **Status** | Production |
-| **Author** | PrototypePrime |
+| **Author** | Mathan Subbiah |
 
 ## ⚠️ Description
 Identifies internal hosts making frequent, periodic connections to external IPs that are rare in the environment, indicative of C2 beaconing.
@@ -33,7 +33,6 @@ index=network sourcetype=firewall action=allowed
     sum(conn_count) as total_beacons
     by dest_ip, dest_port
 | where unique_sources < 5  # Rare destination (few hosts talking to it)
-| eval severity="HIGH"
 ```
 
 ---

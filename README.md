@@ -23,7 +23,9 @@
 This repository provides **production-ready detection rules** and **detection engineering methodology**:
 
 1.  **📚 Production Detection Library**: 50+ battle-tested SPL correlation searches ready for immediate deployment in your Splunk environment.
-2.  **🛠️ Detection Engineering Reference**: A comprehensive [Framework Guide](docs/FRAMEWORK.md) defining our naming conventions, severity levels, and search best practices.
+2.  **🛠️ Detection Engineering Reference**: 
+    *   [Framework Guide](docs/FRAMEWORK.md) - Naming conventions & standards.
+    *   [Lifecycle Guide](docs/DETECTION_LIFECYCLE.md) - Technical guide on creating rules (Native SPL).
 
 **Repository Value:** *Deploy our detection logic as-is, adapt it to your environment, or use our proven patterns as references when building your own custom detections.*
 
@@ -170,10 +172,6 @@ Use **Event-Horizon** to generate production-quality security logs for validatio
 - **Golden Master Templates:** Ensure 100% format accuracy for testing field extractions.
 - **AI Attack Simulation:** Orchestrate coordinated kill chains to validate correlation rules.
 
-```bash
-# Example: Generate 100 Windows Security Logs to test your new rule
-python main.py --sourcetype WinEventLog:Security --count 100
-```
 
 ---
 

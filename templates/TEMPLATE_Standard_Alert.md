@@ -45,12 +45,16 @@ index=security sourcetype=WinEventLog:Security EventCode=4688
 
 ## 🧪 Validation & Tuning
 **False Positives:**
-*   Legitimate scripts used by IT admins (e.g., `Deploy-App.ps1`).
+*   List legitimate activities that might trigger this alert (e.g., Admin scripts).
+
+**Tuning:**
+*   Suggested exclusions or threshold adjustments.
 
 **Validation Steps:**
-1.  Run the query against a 24h lookup window.
-2.  Validate that `commands` does not contain known benign patterns.
-3.  Run Atomic Red Team Test `Txxxx`.
+1.  **Simulation:** Trigger the event. You can use [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon) for automated simulation or manually execute the technique.
+2.  **Verify:** Confirm the SPL returns results.
+3.  **Noise:** Run against background traffic to check for FPs.
+
 
 ## ⏭️ Response
 1.  Isolate the `dest` host.

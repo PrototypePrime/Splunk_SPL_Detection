@@ -8,9 +8,9 @@ First off, thank you for considering contributing! This library relies on securi
 1.  **Fork** the repository.
 2.  **Create** a branch: `git checkout -b detection/T1234-my-detection`
 3.  **Copy** one of the templates:
-    *   `templates/TEMPLATE_Standard_Alert.spl` (For general detections)
-    *   `templates/TEMPLATE_Threat_Hunting.spl` (For hunting queries)
-4.  **Write** your SPL logic.
+    *   `templates/TEMPLATE_Standard_Alert.md` (For general detections)
+    *   `templates/TEMPLATE_Threat_Hunting.md` (For hunting queries)
+4.  **Write** your SPL logic in the Markdown code block.
 5.  **Test** it! (See Testing Guidelines below).
 6.  **Push** and submit a Pull Request.
 

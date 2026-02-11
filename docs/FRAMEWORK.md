@@ -2,6 +2,8 @@
 
 This document defines the standards and practices for the Splunk SPL Detection Library. It serves as a reference for creating high-fidelity, maintainable, and performant detections.
 
+*   For a technical guide on **how** to create rules (log analysis, SPL development), see the [Detection Development Lifecycle](DETECTION_LIFECYCLE.md).
+
 ## 1. Detection Strategy (Severity Levels)
 
 We categorize threats based on their potential impact and the urgency of response required.
@@ -17,12 +19,13 @@ We categorize threats based on their potential impact and the urgency of respons
 
 All detection files and rule names must follow this standard to ensure consistency and easy searching.
 
-**File Name:** `Category/Txxxx_Name.spl`
+**File Name:** `Category/Txxxx_Name.md`
 *   `Category`: The folder name (e.g., `Authentication`, `Endpoint`).
 *   `Txxxx`: The primary MITRE ATT&CK Technique ID.
 *   `Name`: Descriptive title (Snake Case).
+*   **Format:** All files must be Markdown (`.md`) using the [Standard Alert Template](../templates/TEMPLATE_Standard_Alert.md).
 
-**Example:** `Authentication/T1110_Brute_Force.spl`
+**Example:** `Authentication/T1110_Brute_Force.md`
 
 
 

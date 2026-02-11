@@ -1,0 +1,58 @@
+# [Rule Name Title Case]
+
+## 📝 Metadata
+| Attribute | Value |
+| :--- | :--- |
+| **ID** | `SPL-CAT-000` |
+| **MITRE Tactic** | [Tactic Name] |
+| **MITRE Technique** | [Txxxx - Name](https://attack.mitre.org/techniques/Txxxx/) |
+| **Severity** | HIGH |
+| **Status** | Production |
+| **Author** | PrototypePrime |
+
+## ⚠️ Description
+Detailed description of the detection logic. Explain *what* is being detected and *why* it is suspicious.
+
+**Attack Scenario:**
+1.  Attacker gains initial access.
+2.  Attacker executes [Specific Tool].
+3.  Detection fires on [Specific Event].
+
+---
+
+## 🔍 SPL Query
+```spl
+index=security sourcetype=WinEventLog:Security EventCode=4688
+| search NewProcessName="*\\powershell.exe"
+    AND CommandLine="*-enc*"
+| stats 
+    count 
+    min(_time) as first_seen 
+    max(_time) as last_seen 
+    values(CommandLine) as commands 
+    by user, dest, ParentProcessName
+| where count > 0
+# -- False Positive Filtering --
+# | search NOT [ inputlookup allowable_admins.csv ]
+```
+
+---
+
+## 📦 Data Schema
+*   **Index:** `security`
+*   **Sourcetype:** `WinEventLog:Security`
+*   **Key Fields:** `EventCode`, `CommandLine`, `ParentProcessName`
+
+## 🧪 Validation & Tuning
+**False Positives:**
+*   Legitimate scripts used by IT admins (e.g., `Deploy-App.ps1`).
+
+**Validation Steps:**
+1.  Run the query against a 24h lookup window.
+2.  Validate that `commands` does not contain known benign patterns.
+3.  Run Atomic Red Team Test `Txxxx`.
+
+## ⏭️ Response
+1.  Isolate the `dest` host.
+2.  Review `commands` for malicious intent.
+3.  Reset password for `user`.

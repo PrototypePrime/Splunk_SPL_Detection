@@ -23,7 +23,7 @@
 This repository provides **production-ready detection rules** and **detection engineering methodology**:
 
 1.  **📚 Production Detection Library**: 50+ battle-tested SPL correlation searches ready for immediate deployment in your Splunk environment.
-2.  **🛠️ Detection Engineering Reference**: Proven patterns and examples demonstrating professional detection development, testing, and documentation standards.
+2.  **🛠️ Detection Engineering Reference**: A comprehensive [Framework Guide](docs/FRAMEWORK.md) defining our naming conventions, severity levels, and search best practices.
 
 **Repository Value:** *Deploy our detection logic as-is, adapt it to your environment, or use our proven patterns as references when building your own custom detections.*
 
@@ -32,7 +32,7 @@ This repository provides **production-ready detection rules** and **detection en
 ✅ **Low noise** - Tuned for <5% false positive rate  
 ✅ **MITRE-mapped** - Aligned to ATT&CK framework  
 ✅ **Response-ready** - Includes investigation playbooks  
-✅ **CIM-compliant** - Leverages Common Information Model
+✅ **CIM-Compatible** - Aligned with Common Information Model (Best Practice)
 
 ---
 
@@ -94,7 +94,7 @@ Organized into **8 practical categories** covering the full attack lifecycle:
 ### Prerequisites
 - Splunk Enterprise Security 7.0+
 - Required Technical Add-ons (TAs) for your data sources
-- Accelerated CIM data models (Authentication, Endpoint, Network Traffic)
+- Accelerated CIM data models (Authentication, Endpoint, Network Traffic) **(Optional)**
 
 ### How to Use This Library
 
@@ -143,7 +143,7 @@ graph TD
 ```
 
 ### 1. The Logic Core (SPL)
-Our rules are built for performance. We prioritize `tstats` for speed and standardized CIM fields for portability.
+Our rules are built for **Search Efficiency**. We prioritize filtering by `index` and `sourcetype` early in the pipeline to ensure speed without relying on accelerated data models.
 
 **Example Logic:**
 ```spl
@@ -177,18 +177,7 @@ python main.py --sourcetype WinEventLog:Security --count 100
 
 ---
 
-## 📊 Advanced Features
 
-### Risk-Based Alerting (RBA)
-All our rules are compatible with Splunk's RBA framework. Instead of firing an alert immediately, you can modify the action to create a Risk Event:
-
-```spl
-| eval risk_object=user,
-       risk_object_type="user",
-       risk_score=50,
-       risk_message="Brute force login detected for " + user
-| collect index=risk sourcetype=risk_event
-```
 
 ---
 

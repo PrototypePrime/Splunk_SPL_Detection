@@ -27,8 +27,8 @@ First off, thank you for considering contributing! This library relies on securi
 We aim for **production-ready** code. Please verify the following before submitting:
 
 *   **Syntax**: Does the SPL run without errors?
-*   **Performance**: Does it use `tstats` where possible? Avoid broad wildcards `index=*`.
-*   **CIM Compliance**: Do you use standard fields (`user`, `dest`, `src_ip`)?
+*   **Performance**: Do you filter by `index` and `sourcetype` immediately? Avoid broad wildcards `index=*`.
+*   **Field Normalization (CIM)**: Do you use standard fields (`user`, `dest`, `src_ip`) where possible?
 *   **Documentation**: Did you fill out the Description, False Positives, and Severity sections?
 
 ---

@@ -60,8 +60,7 @@ index=security sourcetype=WinEventLog:Security EventCode IN (4625, 4624)
         risk_score >= 60, "HIGH",
         risk_score >= 40, "MEDIUM",
         1=1, "LOW"
-    ),
-    detection_name = "T1110 - Brute Force Login Attack"
+    )
 | table 
     _time, user, dest, src_ips, 
     failed_attempts, successful_attempts, 

@@ -15,3 +15,6 @@ Unlike the `rules/` directory (which contains detection logic), this folder focu
 | [Time Formatting](Guide_Time_Formatting.md) | Using `ctime` (easy) vs `strftime` (custom). |
 | [Appending Results](Guide_Appending_Results.md) | Combining searches with `append` and `appendcols`. |
 | [Monthly Trend Analysis](Guide_Append_Convert_Example.md) | **Example:** 6-month trend using `append` + `convert`. |
+| [Lookup Techniques](Guide_Lookups.md) | Enrichment (`lookup`) and Filtering (`inputlookup`). |
+| [Lookup Management (Add/Remove)](Guide_Lookup_Management.md) | **Automated:** Programmatically add/remove rows from lookups. |
+| [Threat Intel Integration](Guide_Threat_Intel_Lookup.md) | Using IOC lists and calculating "Days Since Added". |

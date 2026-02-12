@@ -1,0 +1,5 @@
+ip,hostname,department,priority
+192.168.1.10,sfo-router-01,Network,High
+10.0.0.5,hr-laptop-44,HR,Low
+172.16.20.55,finance-db-01,Finance,Critical
+10.0.0.99,dev-test-box,Engineering,Low

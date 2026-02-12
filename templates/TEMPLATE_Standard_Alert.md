@@ -6,7 +6,6 @@
 | **ID** | `SPL-CAT-000` |
 | **MITRE Tactic** | [Tactic Name] |
 | **MITRE Technique** | [Txxxx - Name](https://attack.mitre.org/techniques/Txxxx/) |
-| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

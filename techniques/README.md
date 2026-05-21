@@ -18,3 +18,9 @@ Unlike the `rules/` directory (which contains detection logic), this folder focu
 | [Lookup Techniques](Guide_Lookups.md) | Enrichment (`lookup`) and Filtering (`inputlookup`). |
 | [Lookup Management (Add/Remove)](Guide_Lookup_Management.md) | **Automated:** Programmatically add/remove rows from lookups. |
 | [Threat Intel Integration](Guide_Threat_Intel_Lookup.md) | Using IOC lists and calculating "Days Since Added". |
+| [fieldsummary Command](Guide_fieldsummary.md) | Generate summary statistics for fields. |
+| [makeresults Command](Guide_makeresults.md) | Create blank/dummy events for testing and eval. |
+| [foreach Command](Guide_foreach.md) | Loop evaluations across multiple fields. |
+| [map Command](Guide_map.md) | Iterative searches using results from a previous search. |
+| [Subsearches](Guide_subsearch.md) | Use inner searches for dynamic filtering and joins. |
+| [Informational Functions](Guide_Informational_Functions.md) | Functions like `isnull`, `isnum`, `cidrmatch`, `typeof`, etc. |

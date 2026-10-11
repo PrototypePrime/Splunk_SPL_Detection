@@ -6,6 +6,7 @@
 | **ID** | `SPL-WEB-003` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

@@ -14,7 +14,7 @@ Generates a summary of all fields available in the Windows Security Event Log.
 index=windows sourcetype="WinEventLog:Security" | head 1000
 | fieldsummary
 ```
-*   **Result:** Outputs a table showing each field name, the total count of events containing it, the number of distinct values (`distinct_count`), whether it's numeric (`is_exact`), and a JSON array of the most common values (`values`).
+*   **Result:** Outputs a table showing each field name, the total count of events containing it, the number of distinct values (`distinct_count`), whether that distinct count is exact or estimated (`is_exact`), how many values are numeric (`numeric_count`), and a JSON array of the most common values (`values`).
 
 ### Example 2: Filtering the Summary Output
 Sometimes the JSON array `values` is hard to read. You can extract the top value or format it.

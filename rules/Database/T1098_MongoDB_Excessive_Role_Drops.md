@@ -6,6 +6,7 @@
 | **ID** | `SPL-DB-003` |
 | **MITRE Tactic** | Persistence |
 | **MITRE Technique** | [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

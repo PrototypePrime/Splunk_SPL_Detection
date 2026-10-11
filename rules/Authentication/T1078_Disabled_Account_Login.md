@@ -6,6 +6,7 @@
 | **ID** | `SPL-AUTH-002` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 
@@ -15,32 +16,36 @@ Detects login attempts using accounts that are intentionally disabled.
 *   **Internal:** May indicate services improperly configured with deprecated accounts.
 
 **Logic:**
-Filters for `EventCode=4625` (Failure) where the SubStatus or Message indicates `0xC0000072` (Account Disabled).
+Filters for `EventCode=4625` (Failure) where the SubStatus is `0xC0000072` (Account Disabled).
 
 ## 🔍 SPL Query
-```spl
-index=windows sourcetype="WinEventLog:Security" EventCode=4625 
-(Sub_Status="0xc0000072" OR signature="*Account is currently disabled*")
-NOT user IN ("Guest", "DefaultAccount", "*$")
+````spl
+index=windows sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode=4625
+SubStatus="0xC0000072"
+NOT TargetUserName IN ("Guest", "DefaultAccount", "*$")
 
-| convert ctime(_time) as Time
-| stats 
-    earliest(Time) as first_seen
-    latest(Time) as last_seen
-    values(signature) as Error_Message 
-    values(Account_Domain) as user_domain 
-    values(Logon_Type) as logonType 
-    values(Workstation_Name) as src_host 
-    values(src_ip) as source 
-    values(Caller_Process_Name) as process 
-    count 
-    by user 
+```1. Stats Aggregation```
+| stats
+    earliest(_time) as first_seen
+    latest(_time) as last_seen
+    values(SubStatus) as Error_Message
+    values(TargetDomainName) as user_domain
+    values(LogonType) as logonType
+    values(WorkstationName) as src_host
+    values(IpAddress) as source
+    values(ProcessName) as process
+    count
+    by TargetUserName
 
+```2. Format```
+| convert ctime(first_seen) ctime(last_seen)
+| rename TargetUserName as user
 | sort - count
-```
+````
 
 ## 📦 Data Schema
 *   **Index:** `windows`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
 *   **EventCode:** `4625`
 *   **SubStatus:** `0xc0000072` (STATUS_ACCOUNT_DISABLED)
 

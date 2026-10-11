@@ -6,6 +6,7 @@
 | **ID** | `SPL-CLOUD-003` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1078.004 - Cloud Accounts](https://attack.mitre.org/techniques/T1078/004/) |
+| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

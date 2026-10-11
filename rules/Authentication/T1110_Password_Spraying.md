@@ -6,6 +6,7 @@
 | **ID** | `SPL-AUTH-003` |
 | **MITRE Tactic** | Credential Access |
 | **MITRE Technique** | [T1110.003 - Brute Force: Password Spraying](https://attack.mitre.org/techniques/T1110/003/) |
+| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 
@@ -14,40 +15,42 @@ Detects Password Spraying attacks (low and slow). Unlike traditional Brute Force
 
 **Logic:**
 *   Looks for a single Source IP attempting to log in to many distinct targets (>10).
-*   Enforces a 30-minute rolling window `span=30m` since spray attacks are typically slower.
+*   Groups events into fixed 30-minute buckets (`bin _time span=30m`) since spray attacks are typically slower.
 
 ## 🔍 SPL Query
-```spl
-index=windows sourcetype="WinEventLog:Security" EventCode=4625
-NOT user IN ("*$")
+````spl
+index=windows sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode=4625
+NOT TargetUserName="*$"
 
-# 1. Bucket Time (Longer window for slow spray attacks)
+```1. Bucket Time (Longer window for slow spray attacks)```
 | bin _time span=30m
 
-# 2. Stats Aggregation (Pivot on Source IP)
-| stats 
-    dc(user) as distinct_users_targeted
-    values(user) as targeted_users
+```2. Stats Aggregation (Pivot on Source IP)```
+| stats
+    dc(TargetUserName) as distinct_users_targeted
+    values(TargetUserName) as targeted_users
+    values(WorkstationName) as Workstation_Name
+    values(ProcessName) as Caller_Process_Name
     count as total_failed_attempts
     earliest(_time) as started
     latest(_time) as recent
-    by _time, src_ip, Caller_Process_Name, Workstation_Name
+    by _time, IpAddress
 
-# 3. Threshold Filter
+```3. Threshold Filter```
 | where distinct_users_targeted > 10
 
-# 4. Format
+```4. Format```
 | convert ctime(started) ctime(recent)
-| rename distinct_users_targeted as "Distinct Accounts Targeted"
+| rename IpAddress as src_ip, distinct_users_targeted as "Distinct Accounts Targeted"
 | table started, recent, src_ip, Workstation_Name, Caller_Process_Name, "Distinct Accounts Targeted", targeted_users, total_failed_attempts
 | sort - total_failed_attempts
-```
+````
 
 ## 📦 Data Schema
 *   **Index:** `windows`
-*   **Sourcetype:** `WinEventLog:Security`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
 *   **EventCode:** `4625`
-*   **Key Fields:** `src_ip` (Attacker IP), `user` (Targeted Accounts)
+*   **Key Fields:** `IpAddress` (Attacker IP, output as `src_ip`), `TargetUserName` (Targeted Accounts)
 
 ## 🧪 Validation
 1.  **Simulation:** Use a tool or script to attempt a failed login for 15 different usernames from the same IP address within 30 minutes.

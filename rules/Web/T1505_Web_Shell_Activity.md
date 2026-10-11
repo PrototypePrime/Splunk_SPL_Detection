@@ -6,6 +6,7 @@
 | **ID** | `SPL-WEB-004` |
 | **MITRE Tactic** | Persistence |
 | **MITRE Technique** | [T1505.003 - Server Software Component: Web Shell](https://attack.mitre.org/techniques/T1505/003/) |
+| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

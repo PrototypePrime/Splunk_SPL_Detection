@@ -6,6 +6,7 @@
 | **ID** | `SPL-END-002` |
 | **MITRE Tactic** | Execution |
 | **MITRE Technique** | [T1059.001 - PowerShell](https://attack.mitre.org/techniques/T1059/001/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

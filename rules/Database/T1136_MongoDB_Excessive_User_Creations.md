@@ -6,6 +6,7 @@
 | **ID** | `SPL-DB-006` |
 | **MITRE Tactic** | Persistence |
 | **MITRE Technique** | [T1136 - Create Account](https://attack.mitre.org/techniques/T1136/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

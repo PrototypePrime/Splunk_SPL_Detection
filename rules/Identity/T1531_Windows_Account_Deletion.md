@@ -4,8 +4,9 @@
 | Attribute | Value |
 | :--- | :--- |
 | **ID** | `SPL-ID-007` |
-| **MITRE Tactic** | Persistence / Defense Evasion |
-| **MITRE Technique** | [T1098 - Account Manipulation](https://attack.mitre.org/techniques/T1098/) |
+| **MITRE Tactic** | Impact |
+| **MITRE Technique** | [T1531 - Account Access Removal](https://attack.mitre.org/techniques/T1531/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

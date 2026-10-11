@@ -6,6 +6,7 @@
 | **ID** | `SPL-ID-006` |
 | **MITRE Tactic** | Lateral Movement |
 | **MITRE Technique** | [T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

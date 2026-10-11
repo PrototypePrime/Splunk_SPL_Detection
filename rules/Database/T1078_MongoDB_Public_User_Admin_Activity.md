@@ -6,6 +6,7 @@
 | **ID** | `SPL-DB-002` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/) |
+| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

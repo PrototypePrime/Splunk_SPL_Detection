@@ -22,10 +22,11 @@
 
 This repository provides **production-ready detection rules** and **detection engineering methodology**:
 
-1.  **📚 Production Detection Library**: 50+ battle-tested SPL correlation searches ready for immediate deployment in your Splunk environment.
+1.  **📚 Production Detection Library**: 29 battle-tested SPL correlation searches across 9 categories (and growing), ready for immediate deployment in your Splunk environment.
 2.  **🛠️ Detection Engineering Reference**: 
     *   [Framework Guide](docs/FRAMEWORK.md) - Naming conventions & standards.
     *   [Lifecycle Guide](docs/DETECTION_LIFECYCLE.md) - Technical guide on creating rules (Native SPL).
+    *   [SPL Techniques Library](techniques/README.md) - Command recipes (`stats`, lookups, subsearches, `map`, `foreach`, and more).
 
 **Repository Value:** *Deploy our detection logic as-is, adapt it to your environment, or use our proven patterns as references when building your own custom detections.*
 
@@ -40,7 +41,7 @@ This repository provides **production-ready detection rules** and **detection en
 
 ## 📁 Detection Categories
 
-Organized into **8 practical categories** covering the full attack lifecycle:
+Organized into **9 practical categories** covering the full attack lifecycle:
 
 <table>
 <tr>
@@ -87,6 +88,12 @@ Organized into **8 practical categories** covering the full attack lifecycle:
 <sub>Privilege Escalation • Role Changes</sub>
 </td>
 </tr>
+<tr>
+<td width="25%" align="center">
+<h3>🗄️ Database</h3>
+<b>Database Abuse & Destruction</b><br/>
+<sub>DB Drops • Role/User Changes • Public Admin Access</sub>
+</td>
 </tr>
 </table>
 
@@ -102,7 +109,7 @@ Organized into **8 practical categories** covering the full attack lifecycle:
 ### How to Use This Library
 
 #### Option A: Deploy Production Rules (Recommended) ⚡
-1.  **Browse** the detection categories above (e.g., `Authentication/T1110_Brute_Force.spl`).
+1.  **Browse** the detection categories above (e.g., [`rules/Authentication/T1110_Password_Spraying.md`](rules/Authentication/T1110_Password_Spraying.md)).
 2.  **Copy** the production-ready SPL query.
 3.  **Test** in your Splunk environment to validate data visibility.
 4.  **Deploy** as a Correlation Search in Enterprise Security.
@@ -172,11 +179,6 @@ Use **Event-Horizon** to generate production-quality security logs for validatio
 - **Realistic Data:** Generate logs for 80+ technologies (Palo Alto, Windows, AWS, etc.).
 - **Golden Master Templates:** Ensure 100% format accuracy for testing field extractions.
 - **AI Attack Simulation:** Orchestrate coordinated kill chains to validate correlation rules.
-
-
----
-
-
 
 ---
 

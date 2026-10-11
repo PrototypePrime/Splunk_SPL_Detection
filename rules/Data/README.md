@@ -16,8 +16,12 @@ Detection rules for data loss prevention (DLP) and exfiltration.
 | **T1567** | Exfiltration Over Web Service | Upload to Dropbox/Drive |
 | **T1020** | Automated Exfiltration | Scripts to steal data |
 
-## 🚀 Sample Detection
-See `Sample_T1048_Large_Data_Upload.spl` for a production-ready example.
+## 📂 Detections
+| ID | Detection | MITRE | Severity |
+|----|-----------|-------|----------|
+| `SPL-DATA-001` | [Large Data Upload to External IP (>500MB)](T1048_Large_Data_Upload.md) | T1048 | MEDIUM |
+
+File naming: `Txxxx_Descriptive_Name.md` — see the [Framework](../../docs/FRAMEWORK.md#2-naming-convention).
 
 <!--
 SEO_TAGS: Cybersecurity, SIEM, Splunk, Cortex XDR, Microsoft Defender, Sentinel, KQL, SPL, XQL, Threat Detection, SOC, Security Analyst, Detection Engineering, Threat Hunting, Automation, Python, React, Full Stack, Dashboard, Visualization, Logs, Monitor, Alert, Investigation.

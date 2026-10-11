@@ -29,7 +29,7 @@ All detection files and rule names must follow this standard to ensure consisten
 
 
 
-## 3. coding Standards (SPL)
+## 3. Coding Standards (SPL)
 
 To ensure performance and readability, all queries must adhere to these rules:
 
@@ -48,15 +48,17 @@ While we do not strictly enforce the Common Information Model (CIM), using stand
 *   Use pipes `|` on new lines for readability.
 
 *   Comment your code using macros or inline comments if the logic is complex.
+*   SPL has no `#` comments — use inline comments wrapped in triple backticks (Splunk 8.1+); in Markdown, put such queries in a 4-backtick fence.
 
 ## 4. Tuning & Exclusions
 Every rule must include a comment block suggesting where to add exclusions. We do not hardcode exclusions (like `dest!=host1`) in the main logic unless it is a universal standard (e.g., `user!=system`).
 
 **Standard Exclusion Pattern:**
-```spl
+````spl
 ...
 | where count > 5
-# -- Exclusions --
-# | search NOT [ inputlookup allowable_admins ]
-# ----------------
-```
+
+```-- Exclusions (uncomment, then maintain the lookup) --```
+```| search NOT [| inputlookup allowable_admins.csv | fields user ]```
+```----------------```
+````

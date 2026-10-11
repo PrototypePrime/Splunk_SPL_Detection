@@ -6,6 +6,7 @@
 | **ID** | `SPL-DB-001` |
 | **MITRE Tactic** | Impact |
 | **MITRE Technique** | [T1485 - Data Destruction](https://attack.mitre.org/techniques/T1485/) |
+| **Severity** | CRITICAL |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

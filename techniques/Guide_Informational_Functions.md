@@ -48,5 +48,5 @@ index=firewall
 *   *(Note: While `cidrmatch` is technically a Boolean function, it is heavily used for informational validation of IP fields).*
 
 ## ⚠️ Best Practices
-1.  **Handling Nulls before Math:** Always use `isnull` before applying math to a field that might be empty, as `null + 5` results in an error or drop. Use the `coalesce()` function to provide a fallback value: `eval total = coalesce(count, 0) + 5`.
+1.  **Handling Nulls before Math:** Always use `isnull` before applying math to a field that might be empty, as `null + 5` silently evaluates to null (no error is raised, so the row quietly drops out of later filters). Use the `coalesce()` function to provide a fallback value: `eval total = coalesce(count, 0) + 5`.
 2.  **Multi-value Awareness:** Use `if(mvcount(field)>1, ...)` before performing string operations on a field, as functions like `substr()` will fail on multi-value fields.

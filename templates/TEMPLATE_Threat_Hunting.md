@@ -15,26 +15,25 @@
 | **Author** | Mathan Subbiah |
 
 ## 🔬 Hunt Logic
-```spl
-# Step 1: Broad Search
-index=security sourcetype=WinEventLog:Security EventCode=4688
-| where _time >= relative_time(now(), "-7d")
+````spl
+```Step 1: Broad Search```
+index=security sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode=4688
 
-# Step 2: Filter Known Good (The "Noise")
-| search NOT (NewProcessName IN ("*\\svchost.exe", "*\\explorer.exe"))
+```Step 2: Filter Known Good (The "Noise")```
+NOT NewProcessName IN ("*\\svchost.exe", "*\\explorer.exe")
 
-# Step 3: Look for Outliers / Rare Events
+```Step 3: Look for Outliers / Rare Events (rare = fewer than 5 executions)```
 | stats count values(CommandLine) as cmds by NewProcessName
-| where count < 5  # Rare execution frequency
+| where count < 5
 
-# Step 4: Investigate
-| sort count asc
+```Step 4: Investigate```
+| sort + count
 | table NewProcessName, count, cmds
-```
+````
 
 ## 📦 Data Schema
 *   **Index:** `security`
-*   **Sourcetype:** `WinEventLog:Security`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
 
 ## 🧪 Validation & Tuning
 **Known False Positives:**

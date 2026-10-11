@@ -6,6 +6,7 @@
 | **ID** | `SPL-MAIL-001` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1566.001 - Spearphishing Attachment](https://attack.mitre.org/techniques/T1566/001/) |
+| **Severity** | HIGH |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

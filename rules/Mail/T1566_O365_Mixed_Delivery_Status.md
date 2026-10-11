@@ -6,6 +6,7 @@
 | **ID** | `SPL-MAIL-003` |
 | **MITRE Tactic** | Initial Access |
 | **MITRE Technique** | [T1566 - Phishing](https://attack.mitre.org/techniques/T1566/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

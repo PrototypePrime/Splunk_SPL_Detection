@@ -6,6 +6,7 @@
 | **ID** | `SPL-WEB-002` |
 | **MITRE Tactic** | Reconnaissance / Initial Access |
 | **MITRE Technique** | [T1595.003 - Active Scanning: Wordlist Scanning](https://attack.mitre.org/techniques/T1595/003/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

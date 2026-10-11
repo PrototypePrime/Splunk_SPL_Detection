@@ -63,7 +63,6 @@ index=new_source
 ```spl
 index=new_source 
 | timechart span=1h count 
-| trendline smg5(count) as moving_avg
 ```
 
 ---
@@ -78,7 +77,7 @@ Use statistical analysis to determine which fields are suitable for **Filtering*
 ```spl
 index=target_source 
 | fieldsummary maxvals=10 
-| table field, count, distinct_count, max_values 
+| table field, count, distinct_count, values 
 | search count > 0 
 | sort - distinct_count
 ```
@@ -110,58 +109,63 @@ For complex payloads (JSON/XML) that are not automatically parsed:
 **Concept:** A normal event becomes malicious when repeated frequently.
 *   *Examples:* Brute force (4625), port scanning, mass file access.
 *   **SPL Pattern:**
-    ```spl
+    ````spl
     index=web status=403
-    | bin _time span=5m 
-    | stats count by src_ip 
-    | where count > 50  # The Magic Number (tune via baseline)
-    ```
+    | bin _time span=5m
+    | stats count by _time, src_ip
+    ```The Magic Number (tune via baseline)```
+    | where count > 50
+    ````
 
 ### 3.3 Archetype C: The "First Seen" (New Value)
 **Concept:** An entity appears that has never been seen before.
 *   *Examples:* New User Agent, New Admin Account, binary running from Temp.
 *   **SPL Pattern (Lookup Approach):**
-    ```spl
-    # 1. Check current events
-    index=network 
-    | stats earliest(_time) as current_seen by ssl_subject
-    
-    # 2. Compare to historical lookup
+    ````spl
+    ```1. First appearance in the current window```
+    index=network
+    | stats earliest(_time) as first_seen by ssl_subject
+
+    ```2. Merge with history, keep the earliest sighting, save it back```
     | inputlookup append=t known_ssl_subjects.csv
-    | stats min(current_seen) as first_seen by ssl_subject
-    
-    # 3. Filter for recent additions (e.g., last 24h)
-    | where first_seen > relative_time(now(), "-24h")
-    ```
+    | stats min(first_seen) as first_seen by ssl_subject
+    | outputlookup known_ssl_subjects.csv
+
+    ```3. Keep only values first seen inside the selected time range```
+    | addinfo
+    | where first_seen >= info_min_time
+    ````
 
 ### 3.4 Archetype D: The "Rare Event" (Long Tail)
 **Concept:** Valid but statistically improbable behavior. Malicious activity often hides in the "least frequent" bucket.
 *   *Examples:* Rare Parent Process, unique User-Agent in an org.
 *   **SPL Pattern:**
-    ```spl
-    index=os_logs 
-    | stats count by process_name 
-    | eventstats sum(count) as total_events 
-    | eval rarity_score = count / total_events 
-    | where rarity_score < 0.001  # Isolate the bottom 0.1%
-    ```
+    ````spl
+    index=os_logs
+    | stats count by process_name
+    | eventstats sum(count) as total_events
+    | eval rarity_score = count / total_events
+    ```Isolate the bottom 0.1%```
+    | where rarity_score < 0.001
+    ````
 
 ### 3.5 Archetype E: The "Sequence" (Correlation)
 **Concept:** Event A must be followed by Event B within Time T.
 *   *Examples:* Phishing Mail -> PowerShell Execution. New User -> Added to Admin Group.
 *   **SPL Pattern (`stats` method - Preferred over `transaction`):**
-    ```spl
-    index=audit OR index=endpoint
+    ````spl
+    (index=audit OR index=endpoint) ("Created User" OR "Added to Admin")
     | eval event_type = case(match(message, "Created User"), "step1", match(message, "Added to Admin"), "step2")
-    | stats 
-        values(event_type) as steps, 
-        min(_time) as start_time, 
-        max(_time) as end_time 
+    | stats
+        min(eval(if(event_type="step1", _time, null()))) as step1_time
+        max(eval(if(event_type="step2", _time, null()))) as step2_time
         by actor_user
-    | where mvfind(steps, "step1") AND mvfind(steps, "step2")
-    | eval duration = end_time - start_time
-    | where duration < 3600  # Must happen within 1 hour
-    ```
+
+    ```Both steps present, step1 before step2, within 1 hour```
+    | where isnotnull(step1_time) AND isnotnull(step2_time) AND step2_time > step1_time
+    | eval duration = step2_time - step1_time
+    | where duration < 3600
+    ````
 
 ### 3.6 Enrichment Strategy (Contextualization)
 **Objective:** Add value to the alert. "Who" and "Where" are as important as "What".
@@ -194,7 +198,7 @@ Use the Splunk Job Inspector to audit your search.
 ### 5.1 The Tuning Cycle
 When a False Positive (FP) is reported:
 1.  **Analyze:** Is it a logic flaw (regex too broad) or a business exception (Admin doing authorized work)?
-2.  **Tune:** Add the exception to the *Tuning Gate* (Phase 3.1), NEVER strictly hardcode in the base search if possible.
+2.  **Tune:** Add the exception to the rule's *Exclusions* block (see [Framework §4](FRAMEWORK.md#4-tuning--exclusions)), NEVER strictly hardcode in the base search if possible.
 3.  **Validate:** Re-run checking against the last 30 days of data to ensure no True Positives are dropped.
 
 ### 5.2 Deprecation Criteria

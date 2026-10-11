@@ -6,6 +6,7 @@
 | **ID** | `SPL-NET-004-IN` |
 | **MITRE Tactic** | Command and Control |
 | **MITRE Technique** | [T1071 - Application Layer Protocol](https://attack.mitre.org/techniques/T1071/) |
+| **Severity** | MEDIUM |
 | **Status** | Production |
 | **Author** | Mathan Subbiah |
 

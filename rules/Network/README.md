@@ -17,8 +17,14 @@ Detection rules focusing on network traffic anomalies, C2 communication, and lat
 | **T1048** | Exfiltration Over Alternative Protocol | Data theft via FTP, SSH |
 | **T1568** | Dynamic Resolution | DGA domains |
 
-## 🚀 Sample Detection
-See `Sample_T1071_C2_Beaconing.spl` for a production-ready example of detecting C2 beaconing patterns.
+## 📂 Detections
+| ID | Detection | MITRE | Severity |
+|----|-----------|-------|----------|
+| `SPL-NET-001` | [High Frequency Connection to Rare Destination (Potential C2)](T1071_C2_Beaconing.md) | T1071.001 | HIGH |
+| `SPL-NET-004-IN` | [Inbound Threat Intel Traffic](T1071_Threat_Intel_Inbound.md) | T1071 | MEDIUM |
+| `SPL-NET-004-OUT` | [Outbound Threat Intel Traffic](T1071_Threat_Intel_Outbound.md) | T1071 | HIGH |
+
+File naming: `Txxxx_Descriptive_Name.md` — see the [Framework](../../docs/FRAMEWORK.md#2-naming-convention).
 
 <!--
 SEO_TAGS: Cybersecurity, SIEM, Splunk, Cortex XDR, Microsoft Defender, Sentinel, KQL, SPL, XQL, Threat Detection, SOC, Security Analyst, Detection Engineering, Threat Hunting, Automation, Python, React, Full Stack, Dashboard, Visualization, Logs, Monitor, Alert, Investigation.

@@ -23,6 +23,7 @@ Detection rules for identity and access management (IAM) abuse.
 | `SPL-ID-005` | [Windows Excessive Password Change Activity](T1098_Excessive_Password_Change.md) | T1098 | MEDIUM |
 | `SPL-ID-006` | [User Logged into Multiple Hosts (Lateral Movement)](T1078_Excessive_Host_Logins.md) | T1078 | MEDIUM |
 | `SPL-ID-007` | [Windows User Account Deleted](T1531_Windows_Account_Deletion.md) | T1531 | MEDIUM |
+| `SPL-ID-008` | [New User Account Added to an Admin Group Within 1 Hour](T1136_New_User_Added_To_Admin_Group.md) | T1136.002 | HIGH |
 
 File naming: `Txxxx_Descriptive_Name.md` — see the [Framework](../../docs/FRAMEWORK.md#2-naming-convention).
 

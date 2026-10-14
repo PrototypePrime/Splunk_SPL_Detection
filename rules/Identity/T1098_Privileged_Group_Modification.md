@@ -21,29 +21,42 @@ Identifies when a user is added to high-privilege groups like "Domain Admins" or
 ---
 
 ## 🔍 SPL Query
-```spl
-index=security sourcetype=WinEventLog:Security EventCode IN (4728, 4732, 4756)
-| where match(TargetUserName, "(?i)(Domain Admins|Enterprise Admins|Administrators)")
-| stats 
-    count,
-    values(MemberName) as added_user,
+````spl
+index=security sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode IN (4728, 4732, 4756)
+
+```-- Exclusions (uncomment, then maintain the lookup) --```
+```NOT [| inputlookup authorized_group_admins.csv | fields SubjectUserName ]```
+
+| where match(TargetUserName, "(?i)(Domain Admins|Enterprise Admins|Schema Admins|Administrators)")
+
+```1. Stats Aggregation```
+| stats
+    earliest(_time) as first_seen
+    latest(_time) as last_seen
+    values(MemberName) as added_user
     values(SubjectUserName) as actor
-    by TargetUserName, dest
-```
+    count
+    by TargetUserName, Computer
+
+```2. Format```
+| convert ctime(first_seen) ctime(last_seen)
+| rename Computer as dest
+| table first_seen, last_seen, dest, TargetUserName, added_user, actor, count
+````
 
 ---
 
 ## 📦 Data Schema
 *   **Index:** `security`
-*   **Sourcetype:** `WinEventLog:Security`
-*   **Key Fields:** `EventCode`, `TargetUserName`, `MemberName`, `SubjectUserName`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
+*   **Key Fields:** `EventCode`, `TargetUserName` (Group), `MemberName` (Added User), `SubjectUserName` (Actor), `Computer` (output as `dest`)
 
 ## 🧪 Validation & Tuning
 **False Positives:**
 *   Legitimate administrative changes via Change Management.
 
 **Tuning:**
-*   Exclude authorized admin accounts if automated (e.g., `SubjectUserName` IN ("authorized_admin")).
+*   Add authorized automation/admin accounts to `authorized_group_admins.csv` and uncomment the Exclusions line.
 
 **Validation Steps:**
 1.  **Simulation:** Trigger the event. You can use [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon) for automated simulation or manually run: `net group "Domain Admins" testuser /add /domain`

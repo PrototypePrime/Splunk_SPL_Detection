@@ -4,7 +4,7 @@
 
 ![Splunk Enterprise Security](https://img.shields.io/badge/Splunk-Enterprise%20Security-00CC00?style=for-the-badge&logo=splunk)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK%20Mapped-red?style=for-the-badge)](https://attack.mitre.org/)
-[![Detections](https://img.shields.io/badge/Detections-Production%20Ready-blue?style=for-the-badge)]()
+[![Detections](https://img.shields.io/badge/Detections-Production%20Ready-blue?style=for-the-badge)](#-detection-categories)
 
 **Production-Ready Detection Logic & Engineering Toolkit**
 
@@ -22,7 +22,7 @@
 
 This repository provides **production-ready detection rules** and **detection engineering methodology**:
 
-1.  **📚 Production Detection Library**: 29 battle-tested SPL correlation searches across 9 categories (and growing), ready for immediate deployment in your Splunk environment.
+1.  **📚 Production Detection Library**: 37 battle-tested SPL correlation searches across 9 categories (and growing), ready for immediate deployment in your Splunk environment.
 2.  **🛠️ Detection Engineering Reference**: 
     *   [Framework Guide](docs/FRAMEWORK.md) - Naming conventions & standards.
     *   [Lifecycle Guide](docs/DETECTION_LIFECYCLE.md) - Technical guide on creating rules (Native SPL).
@@ -41,56 +41,56 @@ This repository provides **production-ready detection rules** and **detection en
 
 ## 📁 Detection Categories
 
-Organized into **9 practical categories** covering the full attack lifecycle:
+Organized into **9 practical categories** covering the full attack lifecycle. Click a category to see its rules:
 
 <table>
 <tr>
 <td width="25%" align="center">
-<h3>🔐 Authentication</h3>
+<h3><a href="rules/Authentication/README.md">🔐 Authentication</a></h3>
 <b>Login Attacks & Access Abuse</b><br/>
 <sub>Brute Force • Password Spray • MFA Bypass</sub>
 </td>
 <td width="25%" align="center">
-<h3>💻 Endpoint</h3>
+<h3><a href="rules/Endpoint/README.md">💻 Endpoint</a></h3>
 <b>Host-Based Threats</b><br/>
 <sub>Malware • Persistence • Process Injection</sub>
 </td>
 <td width="25%" align="center">
-<h3>🌐 Network</h3>
+<h3><a href="rules/Network/README.md">🌐 Network</a></h3>
 <b>Network-Based Threats</b><br/>
 <sub>C2 • Lateral Movement • Port Scanning</sub>
 </td>
 <td width="25%" align="center">
-<h3>☁️ Cloud</h3>
+<h3><a href="rules/Cloud/README.md">☁️ Cloud</a></h3>
 <b>Cloud Platform Security</b><br/>
 <sub>AWS • Azure • GCP Misconfigs</sub>
 </td>
 </tr>
 <tr>
 <td width="25%" align="center">
-<h3>📧 Mail</h3>
+<h3><a href="rules/Mail/README.md">📧 Mail</a></h3>
 <b>Email-Based Threats</b><br/>
 <sub>Phishing • BEC • Malicious Attachments</sub>
 </td>
 <td width="25%" align="center">
-<h3>🌍 Web</h3>
+<h3><a href="rules/Web/README.md">🌍 Web</a></h3>
 <b>Web Application Attacks</b><br/>
 <sub>SQLi • Web Shells • XSS</sub>
 </td>
 <td width="25%" align="center">
-<h3>📊 Data</h3>
+<h3><a href="rules/Data/README.md">📊 Data</a></h3>
 <b>Data Loss & Exfiltration</b><br/>
 <sub>DLP • Insider Threats • Mass Downloads</sub>
 </td>
 <td width="25%" align="center">
-<h3>👤 Identity</h3>
+<h3><a href="rules/Identity/README.md">👤 Identity</a></h3>
 <b>IAM & Privilege Abuse</b><br/>
 <sub>Privilege Escalation • Role Changes</sub>
 </td>
 </tr>
 <tr>
 <td width="25%" align="center">
-<h3>🗄️ Database</h3>
+<h3><a href="rules/Database/README.md">🗄️ Database</a></h3>
 <b>Database Abuse & Destruction</b><br/>
 <sub>DB Drops • Role/User Changes • Public Admin Access</sub>
 </td>
@@ -120,7 +120,7 @@ Organized into **9 practical categories** covering the full attack lifecycle:
     *   Adjust thresholds based on your baseline
     *   Add environment-specific exclusions
     *   Modify field names to match your data model
-3.  **Reference** the `templates/` directory for detection pattern examples.
+3.  **Reference** the [`templates/`](templates/) directory for detection pattern examples.
 
 #### Option C: Contribute Back (Community) 🤝
 1.  **Fork** this repository.
@@ -189,6 +189,8 @@ We welcome contributions! If you've created a rule using our templates or optimi
 1.  **Fork** this repository.
 2.  **Create** a feature branch.
 3.  **Submit** a Pull Request with your detection logic and testing results.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full checklist and PR template.
 
 ---
 

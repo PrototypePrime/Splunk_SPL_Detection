@@ -17,29 +17,38 @@ Identifies when a single user account or administrative account changes/resets t
 *   Malicious persistence attempts.
 
 ## 🔍 SPL Query
-```spl
-index=windows sourcetype=WinEventLog EventCode IN (4723, 4724) 
-src_user!="*$" 
-NOT Account_Name IN ("ServiceAccount1", "AzureADConnect")
+````spl
+index=windows sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode IN (4723, 4724)
+NOT SubjectUserName="*$"
 
-| convert ctime(_time) as timestamp
-| stats 
-    earliest(timestamp) as started 
-    latest(timestamp) as recent 
-    values(name) as action 
-    values(status) as status 
-    values(src_nt_domain) as src_domain 
-    values(dest_nt_domain) as dest_domain 
-    count 
-    by src_user, user 
+```1. Stats Aggregation```
+| stats
+    earliest(_time) as started
+    latest(_time) as recent
+    values(EventCode) as action
+    values(Keywords) as status
+    values(SubjectDomainName) as src_domain
+    values(TargetDomainName) as dest_domain
+    count
+    by SubjectUserName, TargetUserName
 
+```2. Threshold Filter```
 | where count > 4
-```
+
+```3. Format```
+| convert ctime(started) ctime(recent)
+| rename SubjectUserName as src_user, TargetUserName as user
+| sort - count
+
+```-- Exclusions (uncomment, then maintain the lookup) --```
+```| search NOT [| inputlookup password_reset_exclusions.csv | fields src_user ]```
+````
 
 ## 📦 Data Schema
 *   **Index:** `windows`
-*   **Sourcetype:** `WinEventLog`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
 *   **EventCodes:** `4723` (User changed own password), `4724` (Admin reset password)
+*   **Key Fields:** `SubjectUserName` (Actor, output as `src_user`), `TargetUserName` (Target, output as `user`), `Keywords` (Audit Success / Failure)
 
 ## 🧪 Validation
 1.  **Simulation:** Manually change a test user's password 5 times in 5 minutes using `net user`.

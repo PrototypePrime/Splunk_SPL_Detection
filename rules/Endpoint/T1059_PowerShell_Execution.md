@@ -21,23 +21,33 @@ Identifies PowerShell processes running with encoded commands or attempting to d
 ---
 
 ## 🔍 SPL Query
-```spl
-index=security sourcetype="WinEventLog:Security" EventCode=4688
-| where process_name="powershell.exe" OR process_name="pwsh.exe"
-| where match(process_command_line, "(?i)(-enc|-encodedcommand|downloadstring|iex|invoke-expression)")
-| stats 
-    count as execution_count,
-    values(process_command_line) as commands,
+````spl
+index=security sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode=4688
+NewProcessName IN ("*\\powershell.exe", "*\\pwsh.exe")
+
+```1. Encoded command or download/execute cradle```
+| where match(CommandLine, "(?i)(\s[-/]e[a-z]*\s+[a-z0-9+/=]{20,}|downloadstring|downloadfile|net\.webclient|invoke-webrequest|\biwr\b|start-bitstransfer|\biex\b|invoke-expression)")
+
+```2. Stats Aggregation```
+| stats
+    count as execution_count
+    values(CommandLine) as commands
     earliest(_time) as first_seen
-    by user, dest, parent_process_name
-```
+    latest(_time) as last_seen
+    by SubjectUserName, Computer, ParentProcessName
+
+```3. Format```
+| convert ctime(first_seen) ctime(last_seen)
+| rename SubjectUserName as user, Computer as dest, ParentProcessName as parent_process_name
+| sort - execution_count
+````
 
 ---
 
 ## 📦 Data Schema
 *   **Index:** `security`
-*   **Sourcetype:** `WinEventLog:Security`
-*   **Key Fields:** `EventCode`, `process_name`, `process_command_line`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
+*   **Key Fields:** `NewProcessName` (the program started), `CommandLine` (the full command typed), `ParentProcessName` (the program that started it), `SubjectUserName` (output as `user`), `Computer` (output as `dest`)
 
 ## 🧪 Validation & Tuning
 **False Positives:**
@@ -49,7 +59,7 @@ index=security sourcetype="WinEventLog:Security" EventCode=4688
 
 **Validation Steps:**
 1.  **Simulation:** Trigger the event. You can use [Event-Horizon](https://github.com/PrototypePrime/Event_Horizon) for automated simulation or manually run: `powershell.exe -enc SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAJwBXAHIAaQB0AGUALQBIAG8AcwB0ACAAIgBUAGUAcwB0ACIAJwA=`
-2.  **Verify:** Confirm the SPL returns results with "HIGH" severity.
+2.  **Verify:** Confirm the SPL returns the host (`dest`), the user and the full command line in `commands`.
 3.  **Noise:** Run against background traffic to check for FPs.
 
 ## ⏭️ Response

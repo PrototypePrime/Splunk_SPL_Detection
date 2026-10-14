@@ -19,29 +19,33 @@ Detects when a Windows User Account is deleted (Event Code 4726). While account 
 *   **Specific EventCode:** Uses `EventCode=4726` (User Account Deleted) for precision.
 
 ## 🔍 SPL Query
-```spl
-index=windows sourcetype="WinEventLog:Security" EventCode=4726
-NOT src_user IN ("*$", "ServiceAccount_Pruner")
+````spl
+index=windows sourcetype IN ("XmlWinEventLog", "XmlWinEventLog:Security") EventCode=4726
+NOT SubjectUserName="*$"
 
-| convert ctime(_time) as Time 
-| rename src_user as Deleted_by 
-| rename user as Deleted_account
+```1. Stats Aggregation```
+| stats
+    earliest(_time) as started
+    latest(_time) as recent
+    values(Computer) as Host
+    values(TargetDomainName) as Domain
+    count
+    by SubjectUserName, TargetUserName
 
-| stats 
-    earliest(Time) as started 
-    latest(Time) as recent 
-    values(ComputerName) as Host 
-    values(Account_Domain) as Domain 
-    count 
-    by Deleted_by, Deleted_account
-
+```2. Format```
+| convert ctime(started) ctime(recent)
+| rename SubjectUserName as Deleted_by, TargetUserName as Deleted_account
 | table started, recent, Host, Domain, Deleted_by, Deleted_account, count
-```
+
+```-- Exclusions (uncomment, then maintain the lookup) --```
+```| search NOT [| inputlookup account_deletion_exclusions.csv | fields Deleted_by ]```
+````
 
 ## 📦 Data Schema
 *   **Index:** `windows`
-*   **Sourcetype:** `WinEventLog:Security`
+*   **Sourcetype:** `XmlWinEventLog` (Splunk Windows TA) / `XmlWinEventLog:Security` (Event-Horizon)
 *   **EventCode:** `4726`
+*   **Key Fields:** `SubjectUserName` (output as `Deleted_by`), `TargetUserName` (output as `Deleted_account`), `Computer`
 
 ## 🧪 Validation
 1.  **Simulation:** Use `net user TestUser /delete` on a monitored host.

@@ -24,3 +24,5 @@ Unlike the `rules/` directory (which contains detection logic), this folder focu
 | [map Command](Guide_map.md) | Iterative searches using results from a previous search. |
 | [Subsearches](Guide_subsearch.md) | Use inner searches for dynamic filtering and joins. |
 | [Informational Functions](Guide_Informational_Functions.md) | Functions like `isnull`, `isnum`, `cidrmatch`, `typeof`, etc. |
+| [Geo Distance & Impossible Travel](Guide_Geo_Distance.md) | How to measure the distance between two map locations and the travel speed needed — in plain language. |
+| [streamstats Command](Guide_streamstats.md) | Running counts, gaps between events, sliding windows and clockwork (beacon) detection — in plain language. |
